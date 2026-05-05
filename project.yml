@@ -1,0 +1,25 @@
+name: DizzyAsset
+options:
+  bundleIdPrefix: com.dangkoolwat
+targets:
+  DizzyAsset:
+    type: application
+    platform: macOS
+    deploymentTarget: "13.0"
+    sources:
+      - path: DizzyAsset
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        ENABLE_HARDENED_RUNTIME: YES
+        MARKETING_VERSION: 1.0.0
+        CURRENT_PROJECT_VERSION: 1
+        CODE_SIGN_ENTITLEMENTS: DizzyAsset/Resources/DizzyAsset.entitlements
+        INFOPLIST_KEY_LSMinimumSystemVersion: "13.0"
+        INFOPLIST_KEY_NSAppleEventsUsageDescription: "Final Cut Pro 연동을 위해 권한이 필요합니다."
+        INFOPLIST_KEY_NSDesktopFolderUsageDescription: "에셋 인덱싱을 위해 데스크탑 폴더 접근 권한이 필요합니다."
+        INFOPLIST_KEY_NSDownloadsFolderUsageDescription: "에셋 인덱싱을 위해 다운로드 폴더 접근 권한이 필요합니다."
+        INFOPLIST_KEY_NSRemovableVolumesUsageDescription: "외장 드라이브 에셋 인덱싱을 위해 권한이 필요합니다."
+      debug:
+        DEVELOPMENT_ASSET_PATHS: '"DizzyAsset/Resources/Preview Content"'
