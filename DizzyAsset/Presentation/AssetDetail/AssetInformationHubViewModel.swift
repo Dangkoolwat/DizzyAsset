@@ -10,12 +10,14 @@ class AssetInformationHubViewModel: ObservableObject {
     @Published var isDuplicate: Bool = false
     @Published var isOnline: Bool = false
     @Published var silenceInfo: String? = nil
+    @Published var derivationInfo: String? = nil
     
     private let assetRepository = AssetRepository()
     private let taggingService = TaggingService()
     private let categoryRepository = CategoryRepository()
     private let duplicateService = DuplicateDetectionService()
     private let silenceService = SilenceDetectionService()
+    private let derivationService = DerivedAssetService()
     
     func loadAssetDetails(for id: Int64) {
         self.assetId = id
@@ -25,6 +27,7 @@ class AssetInformationHubViewModel: ObservableObject {
         checkDuplicateStatus(for: id)
         checkOnlineStatus(for: id)
         fetchSilenceInfo(for: id)
+        fetchDerivationInfo(for: id)
     }
     
     private func fetchTechnicalMetadata(for id: Int64) {
@@ -92,6 +95,26 @@ class AssetInformationHubViewModel: ObservableObject {
             }
         } catch {
             silenceInfo = nil
+        }
+    }
+    
+    private func fetchDerivationInfo(for id: Int64) {
+        do {
+            // Check if this asset IS a derivation
+            if let sourceRelation = try derivationService.fetchSource(for: id) {
+                derivationInfo = "Derived from Asset #\(sourceRelation.sourceAssetId) (\(sourceRelation.derivationType.rawValue))"
+                return
+            }
+            
+            // Check if this asset HAS derivations
+            let children = try derivationService.fetchDerivations(for: id)
+            if !children.isEmpty {
+                derivationInfo = "Has \(children.count) derived versions"
+            } else {
+                derivationInfo = nil
+            }
+        } catch {
+            derivationInfo = nil
         }
     }
 }

@@ -110,4 +110,18 @@ enum Schema {
         FOREIGN KEY (asset_id) REFERENCES assets(id) ON DELETE CASCADE
     );
     """
+    
+    static let createAssetDerivationsTable = """
+    CREATE TABLE IF NOT EXISTS asset_derivations (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        source_asset_id INTEGER NOT NULL,
+        derived_asset_id INTEGER,
+        derivation_type TEXT NOT NULL,
+        derived_file_path TEXT,
+        status TEXT NOT NULL,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (source_asset_id) REFERENCES assets(id) ON DELETE CASCADE,
+        FOREIGN KEY (derived_asset_id) REFERENCES assets(id) ON DELETE SET NULL
+    );
+    """
 }

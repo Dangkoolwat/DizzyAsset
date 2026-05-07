@@ -65,6 +65,18 @@ struct AssetDetailView: View {
                     }
                 }
                 
+                if let derivation = hubViewModel.derivationInfo {
+                    Divider()
+                    
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("Lineage")
+                            .font(.headline)
+                        Text(derivation)
+                            .font(.subheadline)
+                            .foregroundColor(.secondary)
+                    }
+                }
+                
                 Divider()
                 
                 // Tags Section
