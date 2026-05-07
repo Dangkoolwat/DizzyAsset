@@ -26,6 +26,7 @@ struct AssetListView: View {
                 List(selection: $selectedAssetId) {
                     ForEach(viewModel.assets) { asset in
                         AssetRowView(
+                            assetId: asset.id,
                             filename: asset.filename,
                             mediaType: asset.mediaType,
                             fileSize: asset.sizeString,

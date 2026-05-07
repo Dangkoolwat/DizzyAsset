@@ -24,6 +24,10 @@ class CategoryService {
         return try repository.createCategory(name: name, parentId: parentId)
     }
     
+    func assignAssetToCategory(assetId: Int64, categoryId: Int64) throws {
+        try repository.assignCategory(assetId: assetId, categoryId: categoryId)
+    }
+    
     func fetchHierarchy() throws -> [CategoryNode] {
         let allRaw = try repository.fetchAllCategories()
         let all = allRaw.compactMap { dict -> Category? in

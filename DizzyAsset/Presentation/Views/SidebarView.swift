@@ -39,6 +39,24 @@ struct SidebarView: View {
         OutlineGroup(node, children: \.children) { item in
             Label(item.category.name, systemImage: "folder")
                 .tag(item.category.name)
+                .onDrop(of: [.text], isTargeted: nil) { providers in
+                    guard let provider = providers.first else { return false }
+                    provider.loadObject(ofClass: NSString.self) { (idString, error) in
+                        guard let idString = idString as? String, let assetId = Int64(idString) else { return }
+                        DispatchQueue.main.async {
+                            handleDrop(assetId: assetId, categoryId: item.category.id)
+                        }
+                    }
+                    return true
+                }
+        }
+    }
+    
+    private func handleDrop(assetId: Int64, categoryId: Int64) {
+        do {
+            try categoryService.assignAssetToCategory(assetId: assetId, categoryId: categoryId)
+        } catch {
+            print("Failed to assign asset to category: \(error)")
         }
     }
     

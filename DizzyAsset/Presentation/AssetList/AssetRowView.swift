@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct AssetRowView: View {
+    let assetId: Int64
     let filename: String
     let mediaType: String
     let fileSize: String
@@ -44,6 +45,9 @@ struct AssetRowView: View {
         .padding(.horizontal, 8)
         .background(isSelected ? Color.accentColor.opacity(0.15) : Color.clear)
         .contentShape(Rectangle())
+        .onDrag {
+            NSItemProvider(object: String(assetId) as NSString)
+        }
     }
     
     private var iconName: String {
