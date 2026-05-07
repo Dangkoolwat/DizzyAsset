@@ -55,6 +55,10 @@ class WorkspaceManager {
         // Initial search index build
         Task {
             try? await SearchIndexService().rebuildIndex()
+            
+            // Trigger lifecycle audit
+            let lifecycle = WorkspaceLifecycleManager()
+            try? await lifecycle.updateOrphanedStatus()
         }
     }
     

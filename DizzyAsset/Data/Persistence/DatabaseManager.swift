@@ -52,6 +52,7 @@ class DatabaseManager {
         try connector.execute(sql: Schema.createAssetDerivationsTable)
         try connector.execute(sql: Schema.createSearchIndexTable)
         try connector.execute(sql: Schema.createSearchAliasesTable)
+        try connector.execute(sql: Schema.createWorkspaceItemsTable)
     }
     
     var db: SQLiteConnector {

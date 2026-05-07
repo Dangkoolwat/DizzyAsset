@@ -144,4 +144,18 @@ enum Schema {
         UNIQUE(term, alias)
     );
     """
+    
+    static let createWorkspaceItemsTable = """
+    CREATE TABLE IF NOT EXISTS workspace_items (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        asset_id INTEGER,
+        file_path TEXT NOT NULL UNIQUE,
+        item_type TEXT NOT NULL,
+        status TEXT NOT NULL,
+        size_bytes INTEGER DEFAULT 0,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (asset_id) REFERENCES assets(id) ON DELETE CASCADE
+    );
+    """
 }
