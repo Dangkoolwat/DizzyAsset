@@ -1,29 +1,129 @@
-# Task Handoff Template
+# Handoff Template
 
-**Task ID:** DA-XXX  
-**Risk Level:** [Trivial | Non-trivial | High-Risk]
+Use this template at the end of every implementation, verification, review, or refactor task.
 
-## 1. Summary
-- Concise description of what was achieved.
-- Rationale for key decisions.
+Keep it short.
+Report evidence.
+Do not declare final acceptance.
 
-## 2. Changes
-- **Files Modified:**
-  - `path/to/file1.swift`
-  - `path/to/file2.swift`
-- **Key Logic:** Brief explanation of the surgical fix.
+---
 
-## 3. Verification Results
-- **Commands Run:**
-  - `xcodegen generate`
-  - `xcodebuild ...`
-- **Results:** [Pass/Fail]
-- **Visual Evidence:** ![Description](file:///artifacts/YYYY-MM-DD/DA-XXX/screenshot.png)
+## Task
 
-## 4. Safety & Risk
-- **Skipped Checks:** List if any and why.
-- **Known Risks:** Potential side effects or technical debt introduced.
-- **Protected Areas Touched:** [None | List explicitly with approval reference]
+- Task ID:
+- Lifecycle stage:
+- Risk level:
+- Agent:
+- Date:
 
-## 5. Next Step
-- What should the next agent or developer do?
+---
+
+## Summary
+
+- What changed:
+- Why it changed:
+- Scope status:
+  - In scope:
+  - Out of scope:
+  - Follow-up needed:
+
+---
+
+## Files Changed
+
+- path:
+  - change:
+  - reason:
+
+---
+
+## Verification
+
+Commands or checks actually run:
+
+- command/check:
+  - result:
+  - evidence:
+
+What is verified:
+
+- item:
+
+What is not verified:
+
+- item:
+  - reason:
+
+Skipped checks:
+
+- check:
+  - reason:
+
+---
+
+## Visual Evidence
+
+Required for UI changes.
+
+- UI changed:
+  - yes/no
+- Artifact path:
+  - artifacts/YYYY-MM-DD/<task-id>/
+- Screenshot/recording:
+  - path or none
+- If missing, explain why:
+
+---
+
+## Knowledge Notes
+
+Use only for reusable knowledge.
+
+- Knowledge note created:
+  - yes/no
+- Path:
+  - docs/knowledge/YYYY-MM-DD-short-topic.md
+- Reason:
+
+---
+
+## Risks
+
+Known risks:
+
+- risk:
+
+Potential regressions:
+
+- item:
+
+Protected areas touched:
+
+- yes/no
+- details:
+
+---
+
+## Next Step
+
+Suggested next step:
+
+- item:
+
+Decision needed from instruction owner:
+
+- item:
+
+---
+
+## Final Authority
+
+Agent does not declare final acceptance.
+
+Instruction owner decides:
+
+- accept
+- reject
+- request follow-up
+- merge
+- release
