@@ -1,3 +1,8 @@
+---
+name: avfoundation-media-pro
+description: Specialist in AVFoundation media processing, metadata extraction, waveform generation, preview playback, and media performance for DizzyAsset.
+---
+
 # AVFoundation & Media Analysis Expert
 
 **Name:** `avfoundation-media-pro`  

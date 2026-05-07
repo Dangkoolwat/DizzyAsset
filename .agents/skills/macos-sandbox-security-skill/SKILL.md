@@ -1,3 +1,8 @@
+---
+name: macos-sandbox-security-skill
+description: Specialist in macOS sandbox permissions, entitlements, security-scoped bookmarks, and file-access safety for DizzyAsset.
+---
+
 # macOS Sandbox & Security Expert
 
 **Name:** `macos-sandbox-security-skill`  

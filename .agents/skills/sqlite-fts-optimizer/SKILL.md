@@ -1,3 +1,8 @@
+---
+name: sqlite-fts-optimizer
+description: Specialist in SQLite schema design, FTS5 search, ranking, and safe migrations for DizzyAsset search features.
+---
+
 # SQLite & FTS5 Performance Expert
 
 **Name:** `sqlite-fts-optimizer`  
