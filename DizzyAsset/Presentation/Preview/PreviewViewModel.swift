@@ -27,12 +27,13 @@ class PreviewViewModel: ObservableObject {
             
             // Resolve bookmark for sandbox access
             if let bookmarkData = location["bookmark_data"] as? Data {
-                let (resolvedURL, _) = try BookmarkManager.shared.resolveBookmark(data: bookmarkData)
-                if BookmarkManager.shared.startAccessing(resolvedURL) {
+                let result = BookmarkManager.shared.resolveBookmark(data: bookmarkData)
+                if let resolvedURL = result.url, BookmarkManager.shared.startAccessing(resolvedURL) {
                     currentSecurityScopedURL = resolvedURL
                     previewService.prepare(url: resolvedURL)
                 } else {
-                    previewService.status = .failed(reason: "Permission denied")
+                    let reason = result.error.map { "\($0)" } ?? "Permission denied"
+                    previewService.status = .failed(reason: reason)
                 }
             } else {
                 // Direct access if possible

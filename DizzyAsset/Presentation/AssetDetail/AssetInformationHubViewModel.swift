@@ -9,6 +9,7 @@ class AssetInformationHubViewModel: ObservableObject {
     @Published var categoryName: String = "None"
     @Published var isDuplicate: Bool = false
     @Published var isOnline: Bool = false
+    @Published var locationStatus: String = "Unknown"
     @Published var silenceInfo: String? = nil
     @Published var derivationInfo: String? = nil
     
@@ -18,6 +19,7 @@ class AssetInformationHubViewModel: ObservableObject {
     private let duplicateService = DuplicateDetectionService()
     private let silenceService = SilenceDetectionService()
     private let derivationService = DerivedAssetService()
+    private let recoveryService = AssetLocationRecoveryService()
     
     func loadAssetDetails(for id: Int64) {
         self.assetId = id
@@ -74,15 +76,24 @@ class AssetInformationHubViewModel: ObservableObject {
     }
     
     private func checkOnlineStatus(for id: Int64) {
-        do {
-            let locations = try assetRepository.fetchLocations(for: id)
-            if let first = locations.first, let urlString = first["url"] as? String, let url = URL(string: urlString) {
-                isOnline = FileManager.default.fileExists(atPath: url.path)
-            } else {
-                isOnline = false
+        Task {
+            do {
+                // Trigger localized recovery check
+                try await recoveryService.recoverAsset(assetId: id)
+                
+                let locations = try assetRepository.fetchLocations(for: id)
+                if let first = locations.first {
+                    let statusString = first["status"] as? String ?? "unknown"
+                    self.locationStatus = statusString.capitalized
+                    self.isOnline = statusString == "available"
+                } else {
+                    self.isOnline = false
+                    self.locationStatus = "Missing"
+                }
+            } catch {
+                self.isOnline = false
+                self.locationStatus = "Error"
             }
-        } catch {
-            isOnline = false
         }
     }
     

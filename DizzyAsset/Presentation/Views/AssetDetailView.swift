@@ -109,9 +109,16 @@ struct AssetDetailView: View {
     
     private var statusSection: some View {
         HStack(spacing: 16) {
-            Label(hubViewModel.isOnline ? "Online" : "Offline", 
-                  systemImage: hubViewModel.isOnline ? "checkmark.circle.fill" : "exclamationmark.triangle.fill")
-                .foregroundColor(hubViewModel.isOnline ? .green : .red)
+            HStack(spacing: 4) {
+                Label(hubViewModel.isOnline ? "Online" : "Offline", 
+                      systemImage: hubViewModel.isOnline ? "checkmark.circle.fill" : "exclamationmark.triangle.fill")
+                    .foregroundColor(hubViewModel.isOnline ? .green : .red)
+                
+                if !hubViewModel.isOnline {
+                    Text("(\(hubViewModel.locationStatus))")
+                        .foregroundColor(.red)
+                }
+            }
             
             if hubViewModel.isDuplicate {
                 Label("Duplicate", systemImage: "doc.on.doc.fill")
