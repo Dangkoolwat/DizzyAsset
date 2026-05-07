@@ -12,15 +12,20 @@ struct DizzyAssetApp: App {
         WindowGroup {
             MainWindowView()
         }
-        .windowStyle(.hiddenTitleBar)
-        .windowToolbarStyle(.unified)
         .commands {
-            CommandGroup(replacing: .newItem) {
-                Button("Quick Peek") {
-                    QuickPeekManager.shared.toggle()
+            SidebarCommands()
+            CommandGroup(replacing: .newItem) { } // Disable New Item for now
+            
+            CommandMenu("Quick Peek") {
+                Button("Open Quick Peek") {
+                    QuickPeekManager.shared.show()
                 }
                 .keyboardShortcut("p", modifiers: .command)
             }
+        }
+        
+        Settings {
+            SettingsView()
         }
     }
 }
