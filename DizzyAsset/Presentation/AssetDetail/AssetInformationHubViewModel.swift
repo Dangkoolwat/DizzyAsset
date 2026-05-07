@@ -9,11 +9,13 @@ class AssetInformationHubViewModel: ObservableObject {
     @Published var categoryName: String = "None"
     @Published var isDuplicate: Bool = false
     @Published var isOnline: Bool = false
+    @Published var silenceInfo: String? = nil
     
     private let assetRepository = AssetRepository()
     private let taggingService = TaggingService()
     private let categoryRepository = CategoryRepository()
     private let duplicateService = DuplicateDetectionService()
+    private let silenceService = SilenceDetectionService()
     
     func loadAssetDetails(for id: Int64) {
         self.assetId = id
@@ -22,6 +24,7 @@ class AssetInformationHubViewModel: ObservableObject {
         fetchCategory(for: id)
         checkDuplicateStatus(for: id)
         checkOnlineStatus(for: id)
+        fetchSilenceInfo(for: id)
     }
     
     private func fetchTechnicalMetadata(for id: Int64) {
@@ -77,6 +80,18 @@ class AssetInformationHubViewModel: ObservableObject {
             }
         } catch {
             isOnline = false
+        }
+    }
+    
+    private func fetchSilenceInfo(for id: Int64) {
+        do {
+            if let result = try silenceService.fetchResult(for: id) {
+                silenceInfo = "Front: \(String(format: "%.2f", result.frontSilence))s, Tail: \(String(format: "%.2f", result.tailSilence))s"
+            } else {
+                silenceInfo = nil
+            }
+        } catch {
+            silenceInfo = nil
         }
     }
 }

@@ -53,6 +53,18 @@ struct AssetDetailView: View {
                         .foregroundColor(.primary)
                 }
                 
+                if let silence = hubViewModel.silenceInfo {
+                    Divider()
+                    
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("Silence Analysis")
+                            .font(.headline)
+                        Text(silence)
+                            .font(.subheadline)
+                            .foregroundColor(.secondary)
+                    }
+                }
+                
                 Divider()
                 
                 // Tags Section

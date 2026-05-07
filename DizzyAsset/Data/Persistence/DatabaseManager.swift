@@ -48,6 +48,7 @@ class DatabaseManager {
         try connector.execute(sql: Schema.createDuplicateScanSessionsTable)
         try connector.execute(sql: Schema.createAppSettingsTable)
         try connector.execute(sql: Schema.createTechnicalMetadataTable)
+        try connector.execute(sql: Schema.createAssetAnalysisTable)
     }
     
     var db: SQLiteConnector {

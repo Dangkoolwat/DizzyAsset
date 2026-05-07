@@ -98,4 +98,16 @@ enum Schema {
         FOREIGN KEY (asset_id) REFERENCES assets(id) ON DELETE CASCADE
     );
     """
+    
+    static let createAssetAnalysisTable = """
+    CREATE TABLE IF NOT EXISTS asset_analysis (
+        asset_id INTEGER PRIMARY KEY,
+        front_silence_duration REAL DEFAULT 0,
+        tail_silence_duration REAL DEFAULT 0,
+        analyzed_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        analyzer_version TEXT,
+        status TEXT,
+        FOREIGN KEY (asset_id) REFERENCES assets(id) ON DELETE CASCADE
+    );
+    """
 }
