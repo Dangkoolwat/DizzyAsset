@@ -4,7 +4,7 @@ import SwiftUI
 struct DizzyAssetApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            MainWindowView()
         }
         .windowStyle(.hiddenTitleBar)
         .windowToolbarStyle(.unified)
