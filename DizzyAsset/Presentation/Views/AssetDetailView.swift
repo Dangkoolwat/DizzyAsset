@@ -4,8 +4,10 @@ struct AssetDetailView: View {
     let assetId: Int64?
     @StateObject private var previewViewModel = PreviewViewModel()
     @State private var tags: [String] = []
+    @State private var categoryName: String = "None"
     
     private let taggingService = TaggingService()
+    private let categoryRepository = CategoryRepository()
     
     var body: some View {
         VStack(spacing: 0) {
@@ -25,6 +27,15 @@ struct AssetDetailView: View {
                         Text("Asset ID: \(assetId)")
                             .font(.subheadline)
                             .foregroundColor(.secondary)
+                        
+                        // Category Section
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text("Category")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                            Text(categoryName)
+                                .font(.subheadline)
+                        }
                         
                         // Tags Section
                         VStack(alignment: .leading, spacing: 8) {
@@ -62,9 +73,11 @@ struct AssetDetailView: View {
             if let id = newId {
                 previewViewModel.loadPreview(for: id)
                 loadTags(for: id)
+                loadCategory(for: id)
             } else {
                 previewViewModel.previewService.stop()
                 tags = []
+                categoryName = "None"
             }
         }
     }
@@ -74,6 +87,19 @@ struct AssetDetailView: View {
             tags = try taggingService.getTags(for: id)
         } catch {
             print("Failed to load tags: \(error)")
+        }
+    }
+    
+    private func loadCategory(for id: Int64) {
+        do {
+            let categories = try categoryRepository.fetchAssetCategories(for: id)
+            if let first = categories.first, let name = first["name"] as? String {
+                categoryName = name
+            } else {
+                categoryName = "None"
+            }
+        } catch {
+            print("Failed to load category: \(error)")
         }
     }
 }
