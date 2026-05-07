@@ -8,6 +8,8 @@ struct MainWindowView: View {
             SidebarView(selection: $selection)
         } content: {
             AssetListView(selection: selection)
+                .frame(minWidth: 400)
+                .background(Color(NSColor.controlBackgroundColor))
         } detail: {
             AssetDetailView()
         }
