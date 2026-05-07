@@ -1,6 +1,6 @@
 # AGENTS.md
 
-**Document version:** v1.5.2  
+**Document version:** v1.6  
 **Project:** DizzyAsset  
 **Document role:** Repository-level instruction router and agent operating guide  
 **Status:** Living document  
@@ -67,6 +67,10 @@ For detailed technical rules, read ONLY the relevant file:
 - **Final Cut Pro integration:** `docs/guidelines/final-cut-pro-integration.md`
 - **Workspace / lifecycle:** `docs/guidelines/workspace-lifecycle.md`
 - **XcodeGen / Project:** `docs/guidelines/xcodegen-project.md`
+- **Search / FTS5 / Ranking:** `docs/guidelines/search-architecture.md`
+- **Duplicate Detection / Hashing:** `docs/guidelines/duplicate-detection.md`
+- **Preview / AVFoundation / Waveform:** `docs/guidelines/preview-engine.md`
+- **AI Analysis / Providers / Tags:** `docs/guidelines/ai-analysis-provider.md`
 
 ---
 
@@ -83,11 +87,11 @@ Product docs and assigned tasks define requirements.
 
 ### `sqlite-fts-optimizer`
 - **Use:** SQLite schema, FTS5, ranking algorithms.
-- **Guideline:** `docs/guidelines/sqlite-migration.md`
+- **Guideline:** `docs/guidelines/sqlite-migration.md`, `docs/guidelines/search-architecture.md`, `docs/guidelines/duplicate-detection.md`
 
 ### `avfoundation-media-pro`
 - **Use:** Media metadata, hashing, waveforms, preview playback.
-- **Guideline:** `docs/guidelines/macos-file-access.md` (for file handling)
+- **Guideline:** `docs/guidelines/macos-file-access.md` (for file handling), `docs/guidelines/preview-engine.md`, `docs/guidelines/duplicate-detection.md`, `docs/guidelines/ai-analysis-provider.md`
 
 ### `swiftui-expert-skill`
 - **Use:** Views, ViewModels, state management.
