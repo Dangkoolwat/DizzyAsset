@@ -4,7 +4,6 @@ import Combine
 @MainActor
 class AssetListViewModel: ObservableObject {
     @Published var assets: [AssetDisplayModel] = []
-    @Published var selectedAssetId: Int64?
     @Published var isLoading: Bool = false
     @Published var searchText: String = "" {
         didSet {

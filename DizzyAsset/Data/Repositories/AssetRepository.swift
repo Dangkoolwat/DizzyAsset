@@ -64,6 +64,11 @@ class AssetRepository {
         try db.execute(sql: sql)
     }
     
+    func fetchLocations(for assetId: Int64) throws -> [[String: Any]] {
+        let sql = "SELECT * FROM asset_locations WHERE asset_id = \(assetId)"
+        return try db.query(sql: sql)
+    }
+    
     func searchAssets(query: String) throws -> [[String: Any]] {
         let escapedQuery = query.replacingOccurrences(of: "'", with: "''")
         let sql = """
