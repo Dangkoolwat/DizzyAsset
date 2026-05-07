@@ -26,11 +26,13 @@ class SearchService {
                   let size = dict["size"] as? Int64 else { return nil }
             
             return AssetDisplayModel(
-                id: id,
+                assetId: id,
+                fileURL: (dict["url"] as? String).flatMap { URL(string: $0) },
                 filename: filename,
                 mediaType: "media",
                 sizeString: ByteCountFormatter.string(fromByteCount: size, countStyle: .file),
-                durationString: nil
+                durationString: nil,
+                url: dict["url"] as? String
             )
         }
     }
@@ -39,9 +41,13 @@ class SearchService {
 // Note: AssetDisplayModel is duplicated here for service boundary. 
 // In a larger refactor, it should move to a Shared Domain entity.
 struct AssetDisplayModel: Identifiable {
-    let id: Int64
+    let assetId: Int64
+    let fileURL: URL?
     let filename: String
     let mediaType: String
     let sizeString: String
     let durationString: String?
+    let url: String?
+    
+    var id: Int64 { assetId }
 }

@@ -2,6 +2,7 @@ import SwiftUI
 
 struct AssetRowView: View {
     let assetId: Int64
+    let fileURL: URL?
     let filename: String
     let mediaType: String
     let fileSize: String
@@ -46,7 +47,14 @@ struct AssetRowView: View {
         .background(isSelected ? Color.accentColor.opacity(0.15) : Color.clear)
         .contentShape(Rectangle())
         .onDrag {
-            NSItemProvider(object: String(assetId) as NSString)
+            let provider = NSItemProvider(object: String(assetId) as NSString)
+            
+            if let url = fileURL {
+                // Register the file URL for external applications (like FCP)
+                provider.registerObject(url as NSURL, visibility: .all)
+            }
+            
+            return provider
         }
     }
     

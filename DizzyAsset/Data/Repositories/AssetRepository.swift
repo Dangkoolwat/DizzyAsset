@@ -29,7 +29,12 @@ class AssetRepository {
     }
     
     func fetchAllAssets() throws -> [[String: Any]] {
-        return try db.query(sql: "SELECT * FROM assets")
+        let sql = """
+        SELECT a.*, al.url 
+        FROM assets a
+        LEFT JOIN asset_locations al ON a.id = al.asset_id
+        """
+        return try db.query(sql: sql)
     }
     
     func findAssetByPath(_ path: String) throws -> Int64? {
@@ -72,7 +77,8 @@ class AssetRepository {
     func searchAssets(query: String) throws -> [[String: Any]] {
         let escapedQuery = query.replacingOccurrences(of: "'", with: "''")
         let sql = """
-        SELECT DISTINCT a.* FROM assets a
+        SELECT DISTINCT a.*, al.url FROM assets a
+        LEFT JOIN asset_locations al ON a.id = al.asset_id
         LEFT JOIN asset_tags at ON a.id = at.asset_id
         LEFT JOIN tags t ON at.tag_id = t.id
         LEFT JOIN asset_categories ac ON a.id = ac.asset_id
