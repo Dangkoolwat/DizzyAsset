@@ -31,4 +31,21 @@ class AssetRepository {
     func fetchAllAssets() throws -> [[String: Any]] {
         return try db.query(sql: "SELECT * FROM assets")
     }
+    
+    func findAssetByPath(_ path: String) throws -> Int64? {
+        let sql = "SELECT asset_id FROM asset_locations WHERE url = '\(path.replacingOccurrences(of: "'", with: "''"))' LIMIT 1"
+        let results = try db.query(sql: sql)
+        return results.first?["asset_id"] as? Int64
+    }
+    
+    func findAssetsBySize(_ size: Int64) throws -> [Int64] {
+        let sql = "SELECT id FROM assets WHERE size = \(size)"
+        let results = try db.query(sql: sql)
+        return results.compactMap { $0["id"] as? Int64 }
+    }
+    
+    func updateFingerprint(assetId: Int64, fingerprint: String) throws {
+        let sql = "UPDATE assets SET fingerprint = '\(fingerprint)' WHERE id = \(assetId)"
+        try db.execute(sql: sql)
+    }
 }

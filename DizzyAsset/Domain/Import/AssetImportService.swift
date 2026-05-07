@@ -1,6 +1,9 @@
 import Foundation
 
 class AssetImportService {
+    private let duplicateDetector = DuplicateDetectionService()
+    private let assetRepository = AssetRepository()
+
     func scan(urls: [URL]) async throws -> ImportScanResult {
         var result = ImportScanResult()
         let fileManager = FileManager.default
@@ -29,17 +32,17 @@ class AssetImportService {
                 
                 for case let fileURL as URL in enumerator {
                     if Task.isCancelled { break }
-                    try process(url: fileURL, result: &result)
+                    try await process(url: fileURL, result: &result)
                 }
             } else {
-                try process(url: rootURL, result: &result)
+                try await process(url: rootURL, result: &result)
             }
         }
         
         return result
     }
     
-    private func process(url: URL, result: inout ImportScanResult) throws {
+    private func process(url: URL, result: inout ImportScanResult) async throws {
         let resourceValues = try url.resourceValues(forKeys: [.isDirectoryKey, .fileSizeKey, .contentModificationDateKey])
         
         if resourceValues.isDirectory == true {
@@ -57,8 +60,25 @@ class AssetImportService {
                 modifiedAt: resourceValues.contentModificationDate ?? Date(),
                 mediaType: type
             )
-            result.candidates.append(candidate)
-            result.discoveredCount += 1
+            
+            // Duplicate Detection Hook
+            let duplicateResult = await duplicateDetector.detectDuplicate(for: candidate)
+            switch duplicateResult.type {
+            case .unique:
+                result.candidates.append(candidate)
+                result.discoveredCount += 1
+            case .pathDuplicate:
+                // Skip path duplicates during import
+                break
+            case .contentPartialMatch, .contentConfirmed:
+                // Report content duplicates but keep in discovery for now
+                result.candidates.append(candidate)
+                result.discoveredCount += 1
+            case .failed:
+                result.errorCount += 1
+            default:
+                break
+            }
         } else {
             result.unsupportedCount += 1
         }
