@@ -1,6 +1,6 @@
 # AGENTS.md
 
-**Document version:** v1.4  
+**Document version:** v1.4.1  
 **Project:** DizzyAsset  
 **Document role:** Repository-level instruction router and agent operating guide  
 **Status:** Living document  
@@ -11,10 +11,8 @@
 ## 0. Purpose
 
 This file is the repository-level instruction router for coding agents.
-
 It defines how agents should work in this repository.
-
-It is now a **lean router** document. Technical details have been moved to `docs/guidelines/`.
+It is a **lean router** document. Technical details are in `docs/guidelines/`.
 
 ---
 
@@ -41,7 +39,8 @@ For implementation work, follow this order:
 4. `docs/product/dizzyasset_development_plan.md`
 5. `docs/product/dizzyasset_design_doc.md`
 6. `docs/product/dizzyasset_v1_prd.md`
-7. Detailed Technical Guidelines (see Section 4)
+7. **Existing code patterns**, if not conflicting with above
+8. Detailed Technical Guidelines (see Section 4)
 
 ---
 
@@ -73,7 +72,10 @@ For detailed technical rules, read ONLY the relevant file:
 
 ## 5. Skill Policy
 
-Use installed skills as follows. Each skill is grounded by the guidelines above.
+**Do not load all skills by default.**
+Load only the skills relevant to the current task.
+Skills do not expand task scope.
+Product docs and assigned tasks define requirements.
 
 ### `macos-sandbox-security-skill`
 - **Use:** Sandbox, security-scoped bookmarks, entitlements.
@@ -98,6 +100,19 @@ Use installed skills as follows. Each skill is grounded by the guidelines above.
 ### `karpathy-guidelines`
 - **Use:** Surgical changes, simplicity.
 - **Guideline:** `docs/guidelines/apple-coding-style.md`
+
+### `xcode-project-analyzer`
+- **Use:** `project.yml`, XcodeGen, schemes, build settings.
+- **Guideline:** `docs/guidelines/workspace-lifecycle.md`
+
+### `code-review-graph`
+- **Use:** post-change review for non-trivial/high-risk changes.
+
+### `review-and-refactor`
+- **Use:** focused refactor review after behavior works.
+
+### `caveman`
+- **Use:** simplify over-complicated local code only.
 
 ---
 
@@ -128,6 +143,10 @@ Treat context as expensive.
 - `xcodegen generate`: Regenerate project.
 - `xcodebuild -project DizzyAsset.xcodeproj -scheme DizzyAsset -configuration Debug build`: CLI Build.
 
+**Verification Rules:**
+- Agents MUST report commands actually run.
+- Agents MUST NOT claim build/test passed unless the command was run and passed.
+
 ---
 
 ## 9. Task Execution & Risk
@@ -135,27 +154,53 @@ Treat context as expensive.
 ### Risk Classification
 - **Trivial:** Local UI/style, no behavior change.
 - **Non-trivial:** Shared logic, DB reads, indexing flows.
-- **High-Risk:** Sandbox, Bookmarks, FCP Integration, DB Migrations.
-
-### Stop Conditions
-- Stop and report if build/test fails, scope expansion is needed, or sandbox behavior is unclear.
-- Never implement hidden media copying for FCP workarounds.
+- **High-Risk:** 
+  - Sandbox / entitlements
+  - security-scoped bookmarks
+  - external storage recovery
+  - Final Cut Pro integration
+  - DB migrations or data deletion
+  - Quick Peek / global hotkey / NSPanel
+  - CI/CD / signing / notarization / release
 
 ---
 
-## 10. Handoff & Knowledge
+## 10. Protected Areas
+
+**Do not change without explicit approval:**
+- entitlements
+- sandbox permissions
+- signing / notarization
+- CI/CD workflows
+- release packaging
+- database migrations that delete or rewrite user data
+- keychain / secrets
+
+---
+
+## 11. Handoff & Knowledge
 
 ### Handoff
-Every task must end with a concise handoff (Task ID, Summary, Evidence, Verification results).
-
-### Visual Evidence
-UI changes MUST include screenshots/recordings in `artifacts/YYYY-MM-DD/<task-id>/`.
+Every task must end with a concise handoff.
+**Handoff MUST include:**
+- Task ID
+- Risk level
+- Files changed
+- Summary
+- Verification run (commands & results)
+- Visual evidence (if UI changed)
+- Skipped checks and why
+- Known risks
+- Next step
 
 ### Knowledge Base
 Non-obvious fixes or platform behaviors MUST be documented in `docs/knowledge/YYYY-MM-DD-short-topic.md`.
+- Keep knowledge notes short.
+- Do not paste huge logs.
+- Do not include secrets.
 
 ---
 
-## 11. Final Authority
+## 12. Final Authority
 
 Agents provide evidence; instruction owner makes final decisions. Do not declare final acceptance.
