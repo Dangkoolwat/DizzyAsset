@@ -33,4 +33,34 @@ class TaggingService {
             _ = try repository.findOrCreateTag(name: tag)
         }
     }
+    
+    func batchTagAssets(assetIds: [Int64], tagName: String) throws {
+        let db = DatabaseManager.shared.db
+        try db.beginTransaction()
+        do {
+            let tagId = try repository.findOrCreateTag(name: tagName)
+            for id in assetIds {
+                try repository.assignTag(assetId: id, tagId: tagId)
+            }
+            try db.commitTransaction()
+        } catch {
+            try? db.rollbackTransaction()
+            throw error
+        }
+    }
+    
+    func batchRemoveTag(assetIds: [Int64], tagName: String) throws {
+        let db = DatabaseManager.shared.db
+        try db.beginTransaction()
+        do {
+            let tagId = try repository.findOrCreateTag(name: tagName)
+            for id in assetIds {
+                try repository.removeTag(assetId: id, tagId: tagId)
+            }
+            try db.commitTransaction()
+        } catch {
+            try? db.rollbackTransaction()
+            throw error
+        }
+    }
 }

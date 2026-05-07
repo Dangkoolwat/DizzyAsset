@@ -2,7 +2,7 @@ import SwiftUI
 
 struct AssetListView: View {
     let selection: String?
-    @Binding var selectedAssetId: Int64?
+    @Binding var selectedAssetIds: Set<Int64>
     @StateObject private var viewModel = AssetListViewModel()
     
     var body: some View {
@@ -23,7 +23,7 @@ struct AssetListView: View {
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else {
-                List(selection: $selectedAssetId) {
+                List(selection: $selectedAssetIds) {
                     ForEach(viewModel.assets) { asset in
                         AssetRowView(
                             assetId: asset.assetId,
@@ -32,7 +32,7 @@ struct AssetListView: View {
                             mediaType: asset.mediaType,
                             fileSize: asset.sizeString,
                             duration: asset.durationString,
-                            isSelected: selectedAssetId == asset.id
+                            isSelected: selectedAssetIds.contains(asset.id)
                         )
                         .tag(asset.id)
                     }

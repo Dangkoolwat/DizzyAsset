@@ -10,6 +10,7 @@ struct SidebarView: View {
             librarySection
             categorySection
         }
+        .background(.thinMaterial)
         .navigationTitle("DizzyAsset")
         .task {
             loadCategories()
@@ -18,11 +19,14 @@ struct SidebarView: View {
     
     private var librarySection: some View {
         Section("Library") {
-            Label("All Assets", systemImage: "square.grid.2x2")
+            Label("All Assets", systemImage: "square.grid.2x2.fill")
+                .foregroundColor(.accentColor)
                 .tag("All Assets")
-            Label("Recent", systemImage: "clock")
+            Label("Recent", systemImage: "clock.fill")
+                .foregroundColor(.orange)
                 .tag("Recent")
-            Label("Favorites", systemImage: "star")
+            Label("Favorites", systemImage: "star.fill")
+                .foregroundColor(.yellow)
                 .tag("Favorites")
         }
     }

@@ -1,7 +1,7 @@
 import Foundation
 
 enum Schema {
-    static let version = 1
+    static let version = 2
     
     static let createMigrationsTable = """
     CREATE TABLE IF NOT EXISTS schema_migrations (
@@ -107,6 +107,31 @@ enum Schema {
         analyzed_at DATETIME DEFAULT CURRENT_TIMESTAMP,
         analyzer_version TEXT,
         status TEXT,
+        FOREIGN KEY (asset_id) REFERENCES assets(id) ON DELETE CASCADE
+    );
+    """
+    
+    static let createAssetAIResultsTable = """
+    CREATE TABLE IF NOT EXISTS asset_ai_results (
+        asset_id INTEGER PRIMARY KEY,
+        provider_id TEXT NOT NULL,
+        provider_version TEXT,
+        raw_json TEXT,
+        normalized_json TEXT,
+        confidence REAL,
+        status TEXT,
+        analyzed_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (asset_id) REFERENCES assets(id) ON DELETE CASCADE
+    );
+    """
+    
+    static let createSuggestedTagsTable = """
+    CREATE TABLE IF NOT EXISTS suggested_tags (
+        asset_id INTEGER NOT NULL,
+        tag_name TEXT NOT NULL,
+        confidence REAL,
+        source TEXT,
+        PRIMARY KEY (asset_id, tag_name),
         FOREIGN KEY (asset_id) REFERENCES assets(id) ON DELETE CASCADE
     );
     """

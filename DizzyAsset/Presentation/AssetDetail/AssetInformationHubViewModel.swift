@@ -12,6 +12,8 @@ class AssetInformationHubViewModel: ObservableObject {
     @Published var locationStatus: String = "Unknown"
     @Published var silenceInfo: String? = nil
     @Published var derivationInfo: String? = nil
+    @Published var suggestedTags: [String] = []
+    @Published var isAnalyzing: Bool = false
     
     private let assetRepository = AssetRepository()
     private let taggingService = TaggingService()
@@ -20,6 +22,7 @@ class AssetInformationHubViewModel: ObservableObject {
     private let silenceService = SilenceDetectionService()
     private let derivationService = DerivedAssetService()
     private let recoveryService = AssetLocationRecoveryService()
+    private let aiAnalysisService = AIAnalysisService()
     
     func loadAssetDetails(for id: Int64) {
         self.assetId = id
@@ -30,6 +33,58 @@ class AssetInformationHubViewModel: ObservableObject {
         checkOnlineStatus(for: id)
         fetchSilenceInfo(for: id)
         fetchDerivationInfo(for: id)
+        fetchSuggestions(for: id)
+    }
+    
+    func analyzeAsset() {
+        guard let id = assetId else { return }
+        isAnalyzing = true
+        
+        Task {
+            do {
+                let asset = try assetRepository.fetchById(id)
+                let filename = asset["filename"] as? String ?? ""
+                let locations = try assetRepository.fetchLocations(for: id)
+                let url = locations.first.flatMap { URL(string: $0["url"] as? String ?? "") }
+                
+                await aiAnalysisService.analyzeAsset(assetId: id, filename: filename, url: url)
+                
+                DispatchQueue.main.async {
+                    self.fetchSuggestions(for: id)
+                    self.isAnalyzing = false
+                }
+            } catch {
+                print("Analysis failed: \(error)")
+                DispatchQueue.main.async {
+                    self.isAnalyzing = false
+                }
+            }
+        }
+    }
+    
+    private func fetchSuggestions(for id: Int64) {
+        suggestedTags = aiAnalysisService.fetchSuggestions(for: id)
+    }
+    
+    func acceptSuggestion(_ tag: String) {
+        guard let id = assetId else { return }
+        do {
+            try aiAnalysisService.acceptSuggestion(assetId: id, tagName: tag)
+            fetchTags(for: id)
+            fetchSuggestions(for: id)
+        } catch {
+            print("Failed to accept suggestion: \(error)")
+        }
+    }
+    
+    func rejectSuggestion(_ tag: String) {
+        guard let id = assetId else { return }
+        do {
+            try aiAnalysisService.rejectSuggestion(assetId: id, tagName: tag)
+            fetchSuggestions(for: id)
+        } catch {
+            print("Failed to reject suggestion: \(error)")
+        }
     }
     
     private func fetchTechnicalMetadata(for id: Int64) {

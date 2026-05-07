@@ -32,8 +32,15 @@ class DatabaseManager {
         let currentVersion = (results.first?["current_version"] as? Int) ?? 0
         
         // 3. Apply migrations if needed
-        if currentVersion < Schema.version {
+        if currentVersion == 0 {
             try applyInitialSchema()
+            try connector.execute(sql: "INSERT INTO schema_migrations (version) VALUES (\(Schema.version))")
+        } else if currentVersion < Schema.version {
+            // Migration from 1 to 2
+            if currentVersion == 1 {
+                try connector.execute(sql: Schema.createAssetAIResultsTable)
+                try connector.execute(sql: Schema.createSuggestedTagsTable)
+            }
             try connector.execute(sql: "INSERT INTO schema_migrations (version) VALUES (\(Schema.version))")
         }
     }
@@ -49,6 +56,8 @@ class DatabaseManager {
         try connector.execute(sql: Schema.createAppSettingsTable)
         try connector.execute(sql: Schema.createTechnicalMetadataTable)
         try connector.execute(sql: Schema.createAssetAnalysisTable)
+        try connector.execute(sql: Schema.createAssetAIResultsTable)
+        try connector.execute(sql: Schema.createSuggestedTagsTable)
         try connector.execute(sql: Schema.createAssetDerivationsTable)
         try connector.execute(sql: Schema.createSearchIndexTable)
         try connector.execute(sql: Schema.createSearchAliasesTable)

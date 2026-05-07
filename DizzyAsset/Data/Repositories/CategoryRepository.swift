@@ -41,4 +41,23 @@ class CategoryRepository {
         """
         return try db.query(sql: sql)
     }
+    
+    func batchAssignCategory(assetIds: [Int64], categoryId: Int64) throws {
+        try db.beginTransaction()
+        do {
+            for id in assetIds {
+                try assignCategory(assetId: id, categoryId: categoryId)
+            }
+            try db.commitTransaction()
+        } catch {
+            try? db.rollbackTransaction()
+            throw error
+        }
+    }
+    
+    func batchClearCategories(assetIds: [Int64]) throws {
+        let idList = assetIds.map { String($0) }.joined(separator: ",")
+        let sql = "DELETE FROM asset_categories WHERE asset_id IN (\(idList))"
+        try db.execute(sql: sql)
+    }
 }

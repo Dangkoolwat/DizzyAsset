@@ -1,0 +1,34 @@
+Command line invocation:
+    /Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild -project DizzyAsset.xcodeproj -scheme DizzyAsset -configuration Debug build
+
+2026-05-07 18:33:02.782 xcodebuild[46431:3256478] [MT] IDERunDestination: Supported platforms for the buildables in the current scheme is empty.
+--- xcodebuild: WARNING: Using the first of multiple matching destinations:
+{ platform:macOS, arch:x86_64, id:9B012672-90E4-5974-A8A9-B7A9AC26CE6D, name:My Mac }
+{ platform:macOS, name:Any Mac }
+ComputePackagePrebuildTargetDependencyGraph
+
+Prepare packages
+
+CreateBuildRequest
+
+SendProjectDescription
+
+CreateBuildOperation
+
+ComputeTargetDependencyGraph
+note: Building targets in dependency order
+note: Target dependency graph (1 target)
+    Target 'DizzyAsset' in project 'DizzyAsset' (no dependencies)
+
+GatherProvisioningInputs
+
+CreateBuildDescription
+
+error: unable to attach DB: error: accessing build database "/Users/sanghyoukjin/Library/Developer/Xcode/DerivedData/DizzyAsset-ggkhrhjhguxxusebveqwvhkrzywa/Build/Intermediates.noindex/XCBuildData/build.db": database is locked Possibly there are two concurrent builds running in the same filesystem location.
+note: Disabling hardened runtime with ad-hoc codesigning. (in target 'DizzyAsset' from project 'DizzyAsset')
+** BUILD FAILED **
+
+
+The following build commands failed:
+	Building project DizzyAsset with scheme DizzyAsset and configuration Debug
+(1 failure)

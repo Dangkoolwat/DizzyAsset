@@ -3,6 +3,15 @@ import Foundation
 class AssetRepository {
     private let db = DatabaseManager.shared.db
     
+    func fetchById(_ id: Int64) throws -> [String: Any] {
+        let sql = "SELECT * FROM assets WHERE id = \(id) LIMIT 1"
+        let results = try db.query(sql: sql)
+        guard let first = results.first else {
+            throw SQLiteError.step(message: "Asset not found")
+        }
+        return first
+    }
+    
     func saveImportCandidate(_ candidate: ImportCandidate, bookmarkData: Data?) throws -> Int64 {
         // 1. Insert into assets table
         // Note: Using ? for parameters to avoid SQL injection and handle blobs
