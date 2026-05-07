@@ -238,6 +238,33 @@ Use for:
 
 Do not use it for speculative redesign.
 
+### `macos-sandbox-security-skill`
+
+Use for:
+
+- macOS Sandbox permissions
+- security-scoped bookmarks
+- entitlements audit
+- AppKit/SwiftUI sandbox edge cases
+
+### `sqlite-fts-optimizer`
+
+Use for:
+
+- SQLite schema design
+- FTS5 full-text search optimization
+- database migrations
+- search ranking algorithms
+
+### `avfoundation-media-pro`
+
+Use for:
+
+- media metadata extraction
+- 3-stage hashing for duplicate detection
+- waveform generation
+- Quick Peek playback logic
+
 ### `caveman`
 
 Use only when explicitly useful for simplifying over-complicated code.
