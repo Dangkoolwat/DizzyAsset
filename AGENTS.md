@@ -67,6 +67,7 @@ For detailed technical rules, read ONLY the relevant file:
 - **File access / bookmarks / sandbox:** `docs/guidelines/macos-file-access.md`
 - **Final Cut Pro integration:** `docs/guidelines/final-cut-pro-integration.md`
 - **Workspace / lifecycle:** `docs/guidelines/workspace-lifecycle.md`
+- **XcodeGen / Project:** `docs/guidelines/xcodegen-project.md`
 
 ---
 
@@ -103,7 +104,7 @@ Product docs and assigned tasks define requirements.
 
 ### `xcode-project-analyzer`
 - **Use:** `project.yml`, XcodeGen, schemes, build settings.
-- **Guideline:** `docs/guidelines/workspace-lifecycle.md`
+- **Guideline:** `docs/guidelines/xcodegen-project.md`
 
 ### `code-review-graph`
 - **Use:** post-change review for non-trivial/high-risk changes.
@@ -163,6 +164,14 @@ Treat context as expensive.
   - Quick Peek / global hotkey / NSPanel
   - CI/CD / signing / notarization / release
 
+### Stop Conditions
+Stop and report if:
+- build/test fails
+- scope expansion is required
+- protected area must be changed
+- sandbox or external storage behavior is unclear
+- FCP workaround would require hidden copying
+
 ---
 
 ## 10. Protected Areas
@@ -193,11 +202,14 @@ Every task must end with a concise handoff.
 - Known risks
 - Next step
 
+**UI changes MUST store screenshots or recordings under `artifacts/YYYY-MM-DD/<task-id>/`.**
+
 ### Knowledge Base
 Non-obvious fixes or platform behaviors MUST be documented in `docs/knowledge/YYYY-MM-DD-short-topic.md`.
 - Keep knowledge notes short.
 - Do not paste huge logs.
 - Do not include secrets.
+- **Do not log every small mistake. Log only reusable knowledge.**
 
 ---
 
