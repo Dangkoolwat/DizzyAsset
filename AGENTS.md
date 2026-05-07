@@ -1,6 +1,6 @@
 # AGENTS.md
 
-**Document version:** v1.4.1  
+**Document version:** v1.5  
 **Project:** DizzyAsset  
 **Document role:** Repository-level instruction router and agent operating guide  
 **Status:** Living document  
