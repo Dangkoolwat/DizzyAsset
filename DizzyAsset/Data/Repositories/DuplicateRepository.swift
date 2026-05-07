@@ -26,4 +26,15 @@ class DuplicateRepository {
         """
         try db.execute(sql: sql)
     }
+    
+    func createDuplicateGroup(hash: String) throws -> Int64 {
+        let sql = "INSERT INTO duplicate_groups (group_hash) VALUES ('\(hash)');"
+        try db.execute(sql: sql)
+        return db.lastInsertId()
+    }
+    
+    func linkAssetToGroup(assetId: Int64, groupId: Int64) throws {
+        let sql = "UPDATE assets SET duplicate_group_id = \(groupId) WHERE id = \(assetId);"
+        try db.execute(sql: sql)
+    }
 }
