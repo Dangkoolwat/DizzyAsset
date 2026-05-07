@@ -1,6 +1,6 @@
 # AGENTS.md
 
-**Document version:** v1.2  
+**Document version:** v1.3  
 **Project:** DizzyAsset  
 **Document role:** Repository-level instruction router and agent operating guide  
 **Status:** Living document  
@@ -381,6 +381,14 @@ Future tests should live in:
 - `DizzyAssetTests/`
 - `DizzyAssetUITests/`
 
+Agent-generated evidence may live in:
+
+- `artifacts/`
+
+Reusable agent knowledge may live in:
+
+- `docs/agent/knowledge/`
+
 The Xcode project is generated from `project.yml`.
 
 MUST NOT edit the Xcode project manually.
@@ -531,7 +539,53 @@ If a small MVP task needs a temporary shortcut, document it and create a follow-
 
 ---
 
-## 11. SwiftUI Rules
+## 11. State Management Rules
+
+DizzyAsset should keep state ownership clear.
+
+Avoid mixed state patterns across agents.
+
+Preferred direction:
+
+- Use a small app-level dependency container for shared services.
+- Use feature ViewModels for screen state.
+- Use domain services for business actions.
+- Use repositories for persistence.
+- Use explicit dependency injection where practical.
+
+Single Source of Truth rules:
+
+- Asset library state should have one clear owner.
+- Selection state should have one clear owner per UI flow.
+- Search query state should be owned by the relevant search ViewModel.
+- Preview playback state should be owned by PreviewService or a focused preview ViewModel.
+- Quick Peek state should be isolated from MainWindow state unless explicit sharing is required.
+- File access state should come from BookmarkStore / FileSystemAccess, not ad hoc view state.
+- Workspace state should come from WorkspaceManager.
+
+Avoid:
+
+- unnecessary `@EnvironmentObject`
+- duplicate source of truth across multiple ViewModels
+- direct mutation of shared state from SwiftUI Views
+- storing persistence state only in view-local `@State`
+- hidden singleton state unless explicitly approved
+
+Use `@EnvironmentObject` only for stable app-wide state.
+
+Prefer passing dependencies explicitly for feature-level state.
+
+If a task needs new shared state, document:
+
+- owner
+- readers
+- writers
+- persistence boundary
+- reset behavior
+
+---
+
+## 12. SwiftUI Rules
 
 Keep views small.
 
@@ -565,7 +619,7 @@ For macOS-specific UI:
 
 ---
 
-## 12. Swift Concurrency Rules
+## 13. Swift Concurrency Rules
 
 Use Swift 6 strict concurrency rules.
 
@@ -599,7 +653,7 @@ Use actors or isolated services when shared mutable state is needed.
 
 ---
 
-## 13. Database and Persistence Rules
+## 14. Database and Persistence Rules
 
 SQLite is the primary local persistence layer.
 
@@ -642,7 +696,7 @@ Do not implement destructive cleanup without explicit instruction.
 
 ---
 
-## 14. File Access and macOS Permission Rules
+## 15. File Access and macOS Permission Rules
 
 DizzyAsset depends on file access correctness.
 
@@ -672,9 +726,37 @@ Rules:
 
 External storage behavior is product-critical.
 
+### Bookmark Resolve and Retry Policy
+
+When the app starts or when a library view needs file access, it SHOULD try to resolve stored security-scoped bookmarks.
+
+When an external drive is reconnected, the app SHOULD retry bookmark resolution before showing a permanent failure state.
+
+Recommended recovery flow:
+
+1. Detect stored asset location.
+2. Try to resolve bookmark.
+3. If bookmark is stale, try to refresh and save a new bookmark.
+4. If the volume is offline, mark the asset or storage location as `volume_offline`.
+5. If the volume comes back, retry resolution.
+6. If permission is denied, mark as `permission_denied`.
+7. If path changed but file may still exist, ask the user to reconnect or choose a new location.
+8. Preserve asset, tag, category, and usage records.
+
+Failure policy:
+
+- Do not delete asset records.
+- Do not delete asset_locations records.
+- Do not silently hide the asset.
+- Do not show only a generic error.
+- Show a recoverable state when recovery may be possible.
+- Prefer retry/reconnect UX before declaring the file unavailable.
+
+Agents implementing this area MUST design for reconnect and retry, not only error display.
+
 ---
 
-## 15. Final Cut Pro Integration Rules
+## 16. Final Cut Pro Integration Rules
 
 Final Cut Pro integration is workflow-critical.
 
@@ -697,7 +779,7 @@ Rules:
 
 ---
 
-## 16. Workspace Rules
+## 17. Workspace Rules
 
 Original files stay where they are.
 
@@ -732,7 +814,7 @@ Rules:
 
 ---
 
-## 17. Comments and Documentation
+## 18. Comments and Documentation
 
 Use comments for why, not what.
 
@@ -773,7 +855,7 @@ Good:
 
 ---
 
-## 18. Task Execution Rules
+## 19. Task Execution Rules
 
 Implement one DA task at a time.
 
@@ -802,7 +884,7 @@ Instruction owner makes final decisions.
 
 ---
 
-## 19. Risk Classification
+## 20. Risk Classification
 
 Classify implementation work before editing.
 
@@ -877,7 +959,7 @@ When unsure, use the stricter risk level.
 
 ---
 
-## 20. Protected Areas
+## 21. Protected Areas
 
 Agents MUST NOT modify protected areas without explicit instruction-owner approval.
 
@@ -905,7 +987,7 @@ Do not make protected changes as a workaround.
 
 ---
 
-## 21. Verification Rules
+## 22. Verification Rules
 
 Verification must use evidence.
 
@@ -998,7 +1080,7 @@ Workspace:
 
 ---
 
-## 22. Stop Conditions
+## 23. Stop Conditions
 
 Stop and report if:
 
@@ -1022,7 +1104,7 @@ A stop is correct behavior when risk increases.
 
 ---
 
-## 23. Failure Report
+## 24. Failure Report
 
 If work stops because of failure, produce a concise failure report.
 
@@ -1046,7 +1128,68 @@ Do not claim success.
 
 ---
 
-## 24. Handoff Requirements
+## 24. Agent Knowledge Base
+
+Difficult failures and hard-won fixes are project assets.
+
+If an agent discovers a bug, workaround, tool issue, permission issue, build issue, or platform behavior that may help future agents, it MUST create or update a short note under:
+
+    docs/agent/knowledge/
+
+Use this only for reusable knowledge.
+
+Do not log every small mistake.
+
+Create a knowledge note when:
+
+- the same issue is likely to happen again
+- the fix was non-obvious
+- macOS sandbox behavior was surprising
+- XcodeGen or build behavior was surprising
+- Swift concurrency behavior was surprising
+- Final Cut Pro drag behavior required trial and error
+- bookmark or external drive recovery behavior was tricky
+- a tool failed in a way future agents should know
+
+Recommended filename format:
+
+    docs/agent/knowledge/YYYY-MM-DD-short-topic.md
+
+Recommended note format:
+
+    # <Short topic>
+
+    ## Context
+    - What task or area was being worked on.
+
+    ## Symptom
+    - What failed or behaved unexpectedly.
+
+    ## Root cause
+    - What caused it, if known.
+
+    ## Fix / Workaround
+    - What worked.
+
+    ## Verification
+    - What command or manual check confirmed it.
+
+    ## Future warning
+    - What future agents should avoid.
+
+Knowledge notes MUST be short.
+
+Do not paste huge logs.
+
+Do not include secrets.
+
+Do not include private credentials.
+
+Mention the created or updated knowledge note in the handoff.
+
+---
+
+## 26. Handoff Requirements
 
 Every implementation task must end with a handoff.
 
@@ -1072,9 +1215,41 @@ Report state, evidence, and risk.
 
 Do not write a story.
 
+### Visual Evidence for UI Changes
+
+All UI-changing tasks MUST provide visual evidence when the environment allows it.
+
+Visual evidence may include:
+
+- screenshot
+- short screen recording
+- animated GIF
+- before/after image
+- Xcode preview screenshot if runtime capture is not available
+
+Store visual evidence under:
+
+    artifacts/
+
+Recommended structure:
+
+    artifacts/YYYY-MM-DD/<task-id>/
+
+Examples:
+
+    artifacts/2026-05-07/DA-014/right-panel-before.png
+    artifacts/2026-05-07/DA-014/right-panel-after.png
+    artifacts/2026-05-07/DA-015/quick-peek-demo.mov
+
+Handoff MUST include links or paths to visual evidence for UI changes.
+
+If visual evidence cannot be produced, the handoff MUST explain why.
+
+Text-only UI reports are not enough when a screenshot or recording is possible.
+
 ---
 
-## 25. Testing Guidelines
+## 27. Testing Guidelines
 
 Future unit tests should live in:
 
@@ -1104,7 +1279,7 @@ Prefer testing business and data behavior before UI-only behavior.
 
 ---
 
-## 26. Commit and Pull Request Guidelines
+## 28. Commit and Pull Request Guidelines
 
 Use conventional prefixes.
 
@@ -1131,7 +1306,7 @@ Pull requests should include:
 
 ---
 
-## 27. Configuration Notes
+## 29. Configuration Notes
 
 The app requests access to:
 
@@ -1159,7 +1334,7 @@ Entitlements and Apple Events behavior are protected areas.
 
 ---
 
-## 28. CI/CD and Release Gate
+## 30. CI/CD and Release Gate
 
 CI/CD, signing, notarization, release tagging, packaging, and publishing are manual gates by default.
 
@@ -1183,7 +1358,7 @@ Instruction owner decides release readiness.
 
 ---
 
-## 29. Detailed Implementation Prompt Boundary
+## 31. Detailed Implementation Prompt Boundary
 
 Development Plan defines task scope and sequencing.
 
@@ -1209,7 +1384,7 @@ Do not merge these roles.
 
 ---
 
-## 30. Final Authority
+## 32. Final Authority
 
 Agents provide evidence.
 
@@ -1231,7 +1406,7 @@ Say what was done and what was verified.
 
 ---
 
-## 31. Updating This File
+## 33. Updating This File
 
 This file is a living router document.
 
@@ -1267,3 +1442,8 @@ When updating this file:
 - add a short version note
 - keep language simple
 - prefer explicit rules over vague advice
+
+Version notes:
+
+- v1.2 introduced repository operating rules, lazy skill loading, source of truth, verification, stop conditions, and handoff.
+- v1.3 added agent knowledge logging, bookmark retry policy, state management rules, and mandatory visual evidence for UI changes.
