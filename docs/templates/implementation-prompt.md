@@ -29,6 +29,7 @@ Rules:
 - Do not expand scope.
 - Do not edit protected areas.
 - Run verification.
+- Record any changes beyond the initial implementation scope in `docs/agent-log/<YYYY-MM-DD>-<TASK_ID>-<short-title>.md`.
 - If UI changes, save visual evidence under `artifacts/YYYY-MM-DD/<TASK_ID>/`.
 - End with a handoff.
 
@@ -70,6 +71,7 @@ Rules:
 - Do not expand scope.
 - Do not edit protected areas.
 - Run verification.
+- Record any changes beyond the initial implementation scope in `docs/agent-log/2026-05-07-DA-001-app-foundation.md`.
 - If UI changes, save visual evidence under `artifacts/YYYY-MM-DD/DA-001/`.
 - End with a handoff.
 
@@ -135,6 +137,8 @@ The detailed task file defines the real scope.
 AGENTS.md defines safety and routing.
 
 Guidelines define technical rules.
+
+Use `docs/agent-log/` to record any follow-up changes, review-driven fixes, or verification outcomes that go beyond the initial implementation scope.
 
 Handoff records evidence.
 
