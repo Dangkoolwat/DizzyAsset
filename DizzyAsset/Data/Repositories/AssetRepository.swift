@@ -63,4 +63,20 @@ class AssetRepository {
         """
         try db.execute(sql: sql)
     }
+    
+    func searchAssets(query: String) throws -> [[String: Any]] {
+        let escapedQuery = query.replacingOccurrences(of: "'", with: "''")
+        let sql = """
+        SELECT DISTINCT a.* FROM assets a
+        LEFT JOIN asset_tags at ON a.id = at.asset_id
+        LEFT JOIN tags t ON at.tag_id = t.id
+        LEFT JOIN asset_categories ac ON a.id = ac.asset_id
+        LEFT JOIN categories c ON ac.category_id = c.id
+        WHERE a.filename LIKE '%\(escapedQuery)%'
+           OR t.name LIKE '%\(escapedQuery)%'
+           OR c.name LIKE '%\(escapedQuery)%'
+        ORDER BY a.filename ASC
+        """
+        return try db.query(sql: sql)
+    }
 }

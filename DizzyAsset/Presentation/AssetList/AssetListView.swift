@@ -37,6 +37,7 @@ struct AssetListView: View {
                 .listStyle(.inset)
             }
         }
+        .searchable(text: $viewModel.searchText, prompt: "Search assets...")
         .task {
             await viewModel.refreshAssets()
         }
