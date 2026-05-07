@@ -1,6 +1,6 @@
 # AGENTS.md
 
-**Document version:** v1.5  
+**Document version:** v1.5.1  
 **Project:** DizzyAsset  
 **Document role:** Repository-level instruction router and agent operating guide  
 **Status:** Living document  
@@ -32,25 +32,24 @@ Agents MUST NOT treat raw chat as implementation scope. Approved artifacts (Task
 
 ## 2. Source of Truth
 
-For implementation work, follow this order:
+For implementation work, follow this priority order:
 1. Explicit task invocation
 2. AGENTS.md (this file)
 3. Assigned DA task
-4. `docs/product/dizzyasset_development_plan.md`
-5. `docs/product/dizzyasset_design_doc.md`
-6. `docs/product/dizzyasset_v1_prd.md`
-7. **Existing code patterns**, if not conflicting with above
-8. Detailed Technical Guidelines (see Section 4)
+4. Product Docs (`docs/product/` - Plan, Design, PRD)
+5. **Detailed Technical Guidelines** (`docs/guidelines/`) - **Safety & Platform rules MUST win over code patterns.**
+6. **Existing code patterns**, if not conflicting with any above
+7. Detailed technical guidelines (style/non-critical rules)
 
 ---
 
 ## 3. Lifecycle Routing
 
-Classify the task stage before acting. Load only relevant documents.
+Classify the task stage before acting. Follow the relevant workflow.
 
 - **Planning/PRD/Design:** Read relevant sections in `docs/product/`.
-- **Implementation:** Read this file, the assigned task, and relevant guidelines in `docs/guidelines/`.
-- **Verification:** Read the diff and `docs/workflows/verification-review.md`.
+- **Implementation:** Follow `docs/workflows/implementation-task.md`.
+- **Verification:** Follow `docs/workflows/verification-review.md`.
 
 ---
 
@@ -190,7 +189,7 @@ Stop and report if:
 ## 11. Handoff & Knowledge
 
 ### Handoff
-Every task must end with a concise handoff.
+Every task must end with a concise handoff. Use `docs/templates/handoff.md`.
 **Handoff MUST include:**
 - Task ID
 - Risk level
