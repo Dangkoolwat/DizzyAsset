@@ -1,6 +1,6 @@
 # AGENTS.md
 
-**Document version:** v1.5.1  
+**Document version:** v1.5.2  
 **Project:** DizzyAsset  
 **Document role:** Repository-level instruction router and agent operating guide  
 **Status:** Living document  
@@ -37,9 +37,9 @@ For implementation work, follow this priority order:
 2. AGENTS.md (this file)
 3. Assigned DA task
 4. Product Docs (`docs/product/` - Plan, Design, PRD)
-5. **Detailed Technical Guidelines** (`docs/guidelines/`) - **Safety & Platform rules MUST win over code patterns.**
+5. **Safety & platform guidelines** in `docs/guidelines/`
 6. **Existing code patterns**, if not conflicting with any above
-7. Detailed technical guidelines (style/non-critical rules)
+7. **Style and non-critical guidelines** in `docs/guidelines/`
 
 ---
 
