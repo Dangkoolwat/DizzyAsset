@@ -71,6 +71,13 @@ Do not declare final acceptance.
 - Follow-up item:
 - Owner decision needed:
 
+## Minimal Changes Needed For Accept
+
+- Change:
+  - why:
+- Change:
+  - why:
+
 ## Notes
 
 - Additional context:

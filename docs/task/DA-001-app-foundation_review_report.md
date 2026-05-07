@@ -46,6 +46,11 @@ Needs follow-up
 - Confirm whether DA-001 should be trimmed back to the minimal foundation described in the task prompt.
 - If the current UI is intended to stand, add screenshots or recordings under `artifacts/YYYY-MM-DD/DA-001/`.
 
+## Minimal Changes Needed For Accept
+
+- Remove downstream feature wiring from the app shell so the implementation stays at a true foundation-only level.
+- Add visual artifacts under `artifacts/YYYY-MM-DD/DA-001/` if UI changes are meant to remain in this task.
+
 ## Notes
 
 - This report does not declare final acceptance.

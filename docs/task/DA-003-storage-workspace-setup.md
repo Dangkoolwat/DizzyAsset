@@ -504,3 +504,29 @@ After DA-003, the likely next task is:
 - DA-004 File Import & Scan
 
 Do not start DA-004 in this task.
+
+---
+
+## 22. Review Output Format
+
+If a review report is created for DA-003, it must use:
+
+- `docs/templates/review-report.md`
+
+The report should include:
+
+- Decision
+- Reviewed Artifacts
+- Scope Check
+- Protected Areas
+- Verification Evidence
+- Visual Evidence
+- Skipped Checks
+- Risks
+- Findings
+- Follow-up Needed
+- Minimal Changes Needed For Accept
+- Notes
+
+Do not declare final acceptance in the report.
+Instruction owner decides the final outcome.
