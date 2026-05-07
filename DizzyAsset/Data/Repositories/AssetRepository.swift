@@ -48,4 +48,19 @@ class AssetRepository {
         let sql = "UPDATE assets SET fingerprint = '\(fingerprint)' WHERE id = \(assetId)"
         try db.execute(sql: sql)
     }
+    
+    func saveTechnicalMetadata(assetId: Int64, metadata: AssetMetadata) throws {
+        let sql = """
+        INSERT OR REPLACE INTO technical_metadata (asset_id, duration, width, height, codec, frame_rate)
+        VALUES (
+            \(assetId), 
+            \(metadata.duration ?? 0), 
+            \(metadata.width ?? 0), 
+            \(metadata.height ?? 0), 
+            '\(metadata.codec ?? "")', 
+            \(metadata.frameRate ?? 0)
+        );
+        """
+        try db.execute(sql: sql)
+    }
 }

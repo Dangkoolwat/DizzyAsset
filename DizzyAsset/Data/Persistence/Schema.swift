@@ -86,4 +86,16 @@ enum Schema {
         updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
     );
     """
+    
+    static let createTechnicalMetadataTable = """
+    CREATE TABLE IF NOT EXISTS technical_metadata (
+        asset_id INTEGER PRIMARY KEY,
+        duration REAL,
+        width INTEGER,
+        height INTEGER,
+        codec TEXT,
+        frame_rate REAL,
+        FOREIGN KEY (asset_id) REFERENCES assets(id) ON DELETE CASCADE
+    );
+    """
 }
