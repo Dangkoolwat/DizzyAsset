@@ -124,4 +124,24 @@ enum Schema {
         FOREIGN KEY (derived_asset_id) REFERENCES assets(id) ON DELETE SET NULL
     );
     """
+    
+    static let createSearchIndexTable = """
+    CREATE VIRTUAL TABLE IF NOT EXISTS asset_search_index USING fts5(
+        asset_id UNINDEXED,
+        filename,
+        tags,
+        categories,
+        aliases
+    );
+    """
+    
+    static let createSearchAliasesTable = """
+    CREATE TABLE IF NOT EXISTS search_aliases (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        term TEXT NOT NULL,
+        alias TEXT NOT NULL,
+        language TEXT DEFAULT 'en',
+        UNIQUE(term, alias)
+    );
+    """
 }

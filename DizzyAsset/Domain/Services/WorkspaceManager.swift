@@ -51,6 +51,11 @@ class WorkspaceManager {
         
         // Persist workspace root in settings
         try saveWorkspaceRoot(ws.rootURL.path)
+        
+        // Initial search index build
+        Task {
+            try? await SearchIndexService().rebuildIndex()
+        }
     }
     
     private func createDirectoryIfNeeded(at url: URL) throws {

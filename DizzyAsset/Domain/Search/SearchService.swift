@@ -10,7 +10,21 @@ class SearchService {
             return try await fetchAll()
         }
         
-        let results = try assetRepository.searchAssets(query: query)
+        // Use FTS5 MATCH for high performance search
+        // We add * to support prefix matching (e.g. "vid" matches "video")
+        let escapedQuery = query.replacingOccurrences(of: "'", with: "''")
+        let ftsQuery = "\(escapedQuery)*"
+        
+        let sql = """
+        SELECT DISTINCT a.*, al.url 
+        FROM asset_search_index idx
+        JOIN assets a ON idx.asset_id = a.id
+        LEFT JOIN asset_locations al ON a.id = al.asset_id
+        WHERE asset_search_index MATCH '\(ftsQuery)'
+        ORDER BY rank, a.filename ASC
+        """
+        
+        let results = try DatabaseManager.shared.db.query(sql: sql)
         return transform(results)
     }
     
