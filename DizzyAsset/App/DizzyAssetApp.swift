@@ -14,5 +14,13 @@ struct DizzyAssetApp: App {
         }
         .windowStyle(.hiddenTitleBar)
         .windowToolbarStyle(.unified)
+        .commands {
+            CommandGroup(replacing: .newItem) {
+                Button("Quick Peek") {
+                    QuickPeekManager.shared.toggle()
+                }
+                .keyboardShortcut("p", modifiers: .command)
+            }
+        }
     }
 }
