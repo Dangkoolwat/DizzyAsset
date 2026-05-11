@@ -109,11 +109,13 @@ Product docs and assigned tasks define requirements.
 - **Use:** `project.yml`, XcodeGen, schemes, build settings.
 - **Guideline:** `docs/guidelines/xcodegen-project.md`
 
-### `code-review-graph`
-- **Use:** post-change review for non-trivial/high-risk changes.
+### `serena`
+- **Use:** Precision-first semantic analysis, LSP-based symbol navigation, architectural memory.
+- **Guideline:** `🚀 Serena Integration & Operation Guide`
 
 ### `review-and-refactor`
 - **Use:** focused refactor review after behavior works.
+- **Guideline:** Use Serena's `find_referencing_symbols` to verify impact before refactoring.
 
 ### `caveman`
 - **Use:** simplify over-complicated local code only.
@@ -216,6 +218,14 @@ Non-obvious fixes or platform behaviors MUST be documented in `docs/knowledge/YY
 
 ---
 
-## 12. Final Authority
+## 12. Serena Operation Rules
+
+1. **Precision First**: All **Non-trivial** tasks (shared logic, architectural changes) MUST begin with Serena's `get_symbols_overview` and `find_symbol` analysis.
+2. **Memory-Driven**: Core architectural decisions and complex logic explanations MUST be recorded in Serena `memories` using `write_memory`.
+3. **LSP-Safe Refactoring**: Use `rename_symbol` and `find_referencing_symbols` to ensure type-safe changes across the entire codebase.
+
+---
+
+## 13. Final Authority
 
 Agents provide evidence; instruction owner makes final decisions. Do not declare final acceptance.
