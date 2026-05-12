@@ -14,6 +14,7 @@ class AssetListViewModel: ObservableObject {
     }
     
     private let searchService = SearchService()
+    private let importService = AssetImportService()
     
     func refreshAssets() async {
         isLoading = true
@@ -23,6 +24,18 @@ class AssetListViewModel: ObservableObject {
             self.assets = try await searchService.search(text: searchText)
         } catch {
             print("Failed to fetch assets: \(error)")
+        }
+    }
+    
+    func importFiles(at urls: [URL]) async {
+        isLoading = true
+        defer { isLoading = false }
+        
+        do {
+            _ = try await importService.importAssets(urls: urls)
+            await refreshAssets()
+        } catch {
+            print("Import failed: \(error)")
         }
     }
 }

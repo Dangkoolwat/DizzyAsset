@@ -41,6 +41,32 @@ class AssetImportService {
         
         return result
     }
+
+    /// Scans and imports assets into the repository
+    func importAssets(urls: [URL]) async throws -> Int {
+        let scanResult = try await scan(urls: urls)
+        var importedCount = 0
+        
+        for candidate in scanResult.candidates {
+            if Task.isCancelled { break }
+            
+            // Create security-scoped bookmark for sandbox persistence
+            let bookmarkData = try? candidate.url.bookmarkData(
+                options: .withSecurityScope,
+                includingResourceValuesForKeys: nil,
+                relativeTo: nil
+            )
+            
+            do {
+                _ = try assetRepository.saveImportCandidate(candidate, bookmarkData: bookmarkData)
+                importedCount += 1
+            } catch {
+                print("Failed to save asset \(candidate.filename): \(error)")
+            }
+        }
+        
+        return importedCount
+    }
     
     private func process(url: URL, result: inout ImportScanResult) async throws {
         let resourceValues = try url.resourceValues(forKeys: [.isDirectoryKey, .fileSizeKey, .contentModificationDateKey])

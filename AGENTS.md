@@ -71,6 +71,7 @@ For detailed technical rules, read ONLY the relevant file:
 - **Duplicate Detection / Hashing:** `docs/guidelines/duplicate-detection.md`
 - **Preview / AVFoundation / Waveform:** `docs/guidelines/preview-engine.md`
 - **AI Analysis / Providers / Tags:** `docs/guidelines/ai-analysis-provider.md`
+- **Semble / Search / Token Economy:** `docs/guidelines/semble-setup-guide.md`
 
 ---
 
@@ -120,9 +121,25 @@ Product docs and assigned tasks define requirements.
 ### `caveman`
 - **Use:** simplify over-complicated local code only.
 
+### `semble`
+- **Use:** Ultra-fast hybrid (semantic + keyword) search for large-scale exploration.
+- **Guideline:** `docs/guidelines/semble-setup-guide.md`
+
 ---
 
-## 6. Context Economy
+## 6. Analysis & Search Priority
+
+To optimize for token economy and architectural accuracy, agents MUST follow this priority:
+
+0. **Semble**: First-pass exploration via natural language/code search (Hybrid: Semantic + Keyword).
+1. **Code Review Graph**: Structural dependency and impact radius analysis.
+2. **Serena**: Precision-first LSP symbol navigation and real-time semantic analysis.
+3. **Grep/Read**: Fallback for exact text matching or non-code file inspection.
+4. **Git**: Historical context and change evolution tracking.
+
+---
+
+## 7. Context Economy
 
 Treat context as expensive.
 - Read only what is needed for the current task.
