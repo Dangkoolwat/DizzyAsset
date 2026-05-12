@@ -86,7 +86,7 @@ For detailed technical rules, read ONLY the relevant file:
 - **Duplicate Detection / Hashing:** `docs/guidelines/duplicate-detection.md`
 - **Preview / AVFoundation / Waveform:** `docs/guidelines/preview-engine.md`
 - **AI Analysis / Providers / Tags:** `docs/guidelines/ai-analysis-provider.md`
-- **Semble / Search / Token Economy:** `docs/guidelines/semble-setup-guide.md`
+- **Semble / Search / Token Economy:** `docs/guidelines/semble-operation-guide.md`
 
 ---
 
@@ -138,7 +138,7 @@ Product docs and assigned tasks define requirements.
 
 ### `semble`
 - **Use:** Ultra-fast hybrid (semantic + keyword) search for large-scale exploration.
-- **Guideline:** `docs/guidelines/semble-setup-guide.md`
+- **Guideline:** `docs/guidelines/semble-operation-guide.md`
 
 
 ---
