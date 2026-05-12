@@ -43,6 +43,21 @@ For implementation work, follow this priority order:
 
 ---
 
+## 2A. Code Exploration & Token Efficiency Rules
+
+When exploring and modifying code, you MUST use tools according to the priority below and minimize token consumption. **If the results of any step sufficiently meet the objective, terminate the exploration immediately without moving to the next step.**
+
+- Step 0: [Semble] - Secure relevant code snippets via natural language search first.
+- Step 1: [code-review-graph] - Understand the structure of related upstream/downstream modules.
+- Step 1.5: [File Skeleton] - Verify the file map with Serena's `get_symbols_overview`.
+- Step 2: [Serena (LSP)] - Precise navigation to specific symbol definitions/references.
+- Step 3: [Grep/Read] - Intensive reading of the confirmed scope only (Surgical Read).
+- Step 4: [Git] - Verify change history and final validation.
+
+- Principle: Adhere to the sequence of "Establish Hypothesis -> Locate -> Confirm and Read", and prohibit calling the next step if satisfied at any stage (Gating Principle).
+
+---
+
 ## 3. Lifecycle Routing
 
 Classify the task stage before acting. Follow the relevant workflow.
@@ -125,17 +140,6 @@ Product docs and assigned tasks define requirements.
 - **Use:** Ultra-fast hybrid (semantic + keyword) search for large-scale exploration.
 - **Guideline:** `docs/guidelines/semble-setup-guide.md`
 
----
-
-## 6. Analysis & Search Priority
-
-To optimize for token economy and architectural accuracy, agents MUST follow this priority:
-
-0. **Semble**: First-pass exploration via natural language/code search (Hybrid: Semantic + Keyword).
-1. **Code Review Graph**: Structural dependency and impact radius analysis.
-2. **Serena**: Precision-first LSP symbol navigation and real-time semantic analysis.
-3. **Grep/Read**: Fallback for exact text matching or non-code file inspection.
-4. **Git**: Historical context and change evolution tracking.
 
 ---
 
