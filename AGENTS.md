@@ -45,14 +45,14 @@ For implementation work, follow this priority order:
 
 ## 2A. Code Exploration & Token Efficiency Rules
 
-When exploring and modifying code, you MUST use tools according to the priority below and minimize token consumption. **If the results of any step sufficiently meet the objective, terminate the exploration immediately without moving to the next step.**
+When exploring and modifying code, tools MUST be used according to the priorities below to minimize token consumption. **If the results of any step sufficiently meet the objective, stop the search immediately and do not proceed to the next step.**
 
-- Step 0: [Semble] - Secure relevant code snippets via natural language search first.
-- Step 1: [code-review-graph] - Understand the structure of related upstream/downstream modules.
-- Step 1.5: [File Skeleton] - Verify the file map with Serena's `get_symbols_overview`.
-- Step 2: [Serena (LSP)] - Precise navigation to specific symbol definitions/references.
-- Step 3: [Grep/Read] - Intensive reading of the confirmed scope only (Surgical Read).
-- Step 4: [Git] - Verify change history and final validation.
+- **Step 0: [Semble]** - First obtain relevant code snippets via natural language search.
+- **Step 1: [code-review-graph]** - Understand high/low-level module structures and dependencies.
+- **Step 1.5: [File Skeleton]** - Verify file maps using Serena's `get_symbols_overview`.
+- **Step 2: [Serena (LSP)]** - Perform precision navigation to specific symbol definitions and references.
+- **Step 3: [Grep/Read]** - Conduct deep, precision reading only within confirmed scopes (Surgical Read: Strictly limit reading to specific Line Ranges containing the necessary functions or logic).
+- **Step 4: [Git]** - Review change history and perform final verification.
 
 - Principle: Adhere to the sequence of "Establish Hypothesis -> Locate -> Confirm and Read", and prohibit calling the next step if satisfied at any stage (Gating Principle).
 
