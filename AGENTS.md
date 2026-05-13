@@ -1,10 +1,10 @@
 # AGENTS.md
 
-**Document version:** v1.6  
+**Document version:** v1.7  
 **Project:** DizzyAsset  
 **Document role:** Repository-level instruction router and agent operating guide  
 **Status:** Living document  
-**Last updated:** 2026-05-07
+**Last updated:** 2026-05-13
 
 ---
 
@@ -47,14 +47,25 @@ For implementation work, follow this priority order:
 
 When exploring and modifying code, tools MUST be used according to the priorities below to minimize token consumption. **If the results of any step sufficiently meet the objective, stop the search immediately and do not proceed to the next step.**
 
-- **Step 0: [Semble]** - First obtain relevant code snippets via natural language search.
-- **Step 1: [code-review-graph]** - Understand high/low-level module structures and dependencies.
-- **Step 1.5: [File Skeleton]** - Verify file maps using Serena's `get_symbols_overview`.
-- **Step 2: [Serena (LSP)]** - Perform precision navigation to specific symbol definitions and references.
-- **Step 3: [Grep/Read]** - Conduct deep, precision reading only within confirmed scopes (Surgical Read: Strictly limit reading to specific Line Ranges containing the necessary functions or logic).
-- **Step 4: [Git]** - Review change history and perform final verification.
+- **Step 0: [Semble]** - Narrow code snippet exploration (Minimal token consumption).
+- **Step 1: [code-review-graph (CLI)]** - Structural analysis & impact scope identification. Use CLI instead of MCP.
+- **Step 1.5: [File Skeleton]** - Understand file structure first via Serena's `get_symbols_overview`.
+- **Step 2: [Serena (LSP)]** - Precision symbol definition & reference exploration.
+- **Step 3: [Grep/Read]** - Precision reading of specific line ranges only (Surgical Read).
 
 - Principle: Adhere to the sequence of "Establish Hypothesis -> Locate -> Confirm and Read", and prohibit calling the next step if satisfied at any stage (Gating Principle).
+
+---
+
+## 2B. Token Shield
+
+Agents MUST adhere to the following rules when submitting CLI results or analysis reports.
+
+| Tool (CLI) | Purpose | Command Example | Token Defense Rule (MANDATORY) |
+|---|---|---|---|
+| **code-review-graph** | Impact Analysis | `npx caveman-shrink code-review-graph detect-changes` | Do not dump raw results; report a summary of key dependency chains within **30 lines**. |
+| **Repomix** | Large-scale packing | `npx repomix --include "src/**/*.java"` | Avoid full project packing; specify **only required folders**. |
+| **LLMLingua** | Doc/Log Compression | `llmlingua --context [file]` | Perform **forced compression** before permanent documentation of massive build stacks or DB schemas. |
 
 ---
 
@@ -87,6 +98,7 @@ For detailed technical rules, read ONLY the relevant file:
 - **Preview / AVFoundation / Waveform:** `docs/guidelines/preview-engine.md`
 - **AI Analysis / Providers / Tags:** `docs/guidelines/ai-analysis-provider.md`
 - **Semble / Search / Token Economy:** `docs/guidelines/semble-operation-guide.md`
+- **Code Review Graph / Analysis:** `docs/guidelines/code-review-graph-guide.md`
 
 ---
 
@@ -241,9 +253,12 @@ Non-obvious fixes or platform behaviors MUST be documented in `docs/knowledge/YY
 
 ## 12. Serena Operation Rules
 
-1. **Precision First**: All **Non-trivial** tasks (shared logic, architectural changes) MUST begin with Serena's `get_symbols_overview` and `find_symbol` analysis.
+1. **Precision First**: All **Non-trivial** tasks (shared logic, architectural changes) MUST follow the **Code Exploration Hierarchy** (Section 2A).
 2. **Memory-Driven**: Core architectural decisions and complex logic explanations MUST be recorded in Serena `memories` using `write_memory`.
-3. **LSP-Safe Refactoring**: Use `rename_symbol` and `find_referencing_symbols` to ensure type-safe changes across the entire codebase.
+3. **MCP Optimization**:
+   - **Serena**: Retain ONLY `replace_symbol_body` and `rename_symbol`; all others MUST be set as `disabledTools`.
+   - **Other Analysis Tools**: Remove from MCP list and utilize via CLI (`run_command`) only.
+4. **LSP-Safe Refactoring**: Use `rename_symbol` to ensure type-safe changes across the entire codebase.
 
 ---
 
