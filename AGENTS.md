@@ -1,6 +1,6 @@
 # AGENTS.md
 
-**Document version:** v1.7  
+**Document version:** v2.0  
 **Project:** DizzyAsset  
 **Document role:** Repository-level instruction router and agent operating guide  
 **Status:** Living document  
@@ -8,17 +8,9 @@
 
 ---
 
-## 0. Purpose
+## 0. Purpose & Operating Model
 
-This file is the repository-level instruction router for coding agents.
-It defines how agents should work in this repository.
-It is a **lean router** document. Technical details are in `docs/guidelines/`.
-
----
-
-## 1. Operating Model
-
-This repository is developed by a solo developer using coding agents.
+This file is the mandatory execution contract for all agents in this repository. It defines how agents should work to ensure predictability, safety, and token efficiency.
 
 Agents MUST optimize for:
 - small surgical changes
@@ -30,30 +22,59 @@ Agents MUST NOT treat raw chat as implementation scope. Approved artifacts (Task
 
 ---
 
-## 2. Source of Truth
+## 1. Source of Truth
 
-For implementation work, follow this priority order:
-1. Explicit task invocation
-2. AGENTS.md (this file)
+Priority order:
+1. User instructions in the current session
+2. Nearest `AGENTS.md` (this file)
 3. Assigned DA task
 4. Product Docs (`docs/product/` - Plan, Design, PRD)
 5. **Safety & platform guidelines** in `docs/guidelines/`
 6. **Existing code patterns**, if not conflicting with any above
 7. **Style and non-critical guidelines** in `docs/guidelines/`
 
+If rules conflict, follow the higher-priority source and briefly report the conflict.
+
 ---
 
-## 2A. Code Exploration & Token Efficiency Rules
+## 2. Context Economy & Tool Efficiency
 
-When exploring and modifying code, tools MUST be used according to the priorities below to minimize token consumption. **If the results of any step sufficiently meet the objective, stop the search immediately and do not proceed to the next step.**
+Agents MUST minimize token usage without skipping mandatory policy checks. Unnecessary tool calls or broad file reading is strictly forbidden.
 
-- **Step 0: [Semble]** - Narrow code snippet exploration (Minimal token consumption).
-- **Step 1: [code-review-graph (CLI)]** - Structural analysis & impact scope identification. Use CLI instead of MCP.
-- **Step 1.5: [File Skeleton]** - Understand file structure first via Serena's `get_symbols_overview`.
-- **Step 2: [Serena (LSP)]** - Precision symbol definition & reference exploration.
-- **Step 3: [Grep/Read]** - Precision reading of specific line ranges only (Surgical Read).
+### 2A. Code Exploration Hierarchy (🏆 Tool Hierarchy)
+- **Step 0: [Semble]** - First obtain relevant code snippets for narrow/local discovery or literal prose search.
+    - **Boundary:** "Where is specific logic?" (Keyword/Intent-focused search)
+    - **Note:** Pass a git URL or local path as `repo` to index it on demand; indexes are cached for the session.
+- **Step 1: [code-review-graph (CLI)]** - Use first when the task is Non-trivial, the blast radius is unclear, or structural dependencies matter. Run via `npx caveman-shrink code-review-graph`.
+    - **Boundary:** "What breaks if I change this file?" (Dependency & Blast Radius analysis)
+    - **Maintenance:** Must run `code-review-graph update` after major refactoring or structural changes. Cross-reference with `xcodegen generate` if files are added/removed. // Essential procedure for reflecting latest code structure.
+- **Step 1B: [Apple Docs / Swift Specs]** - For platform APIs (SwiftUI, AVFoundation, etc.), use `search_web` or `read_url_content` for official docs. Avoid broad scraping; focus on specific snippets.
+- **Step 1.5: [File Skeleton]** - Verify file maps using Serena's `get_symbols_overview`.
+    - **Fallback:** If Serena MCP is restricted, use CLI-based symbol extraction via `serena project index` results or read `.serena/project.yml` for configuration. (Read-only analysis tools are permitted for efficient navigation).
+- **Step 2: [Serena (LSP)]** - Perform precision navigation to specific symbol definitions and references.
+    - **Permission:** Read-only analysis tools are permitted at all times for efficient navigation.
+- **Step 3: [Grep/Read]** - Conduct deep, precision reading only within confirmed scopes (Surgical Read: Strictly limit reading to specific Line Ranges containing the necessary functions or logic).
+- **Step 4: [Git]** - Review change history and perform final verification.
 
-- Principle: Adhere to the sequence of "Establish Hypothesis -> Locate -> Confirm and Read", and prohibit calling the next step if satisfied at any stage (Gating Principle).
+### 🛡️ Efficiency Constraints
+- **Gating Principle**: Proceed to the next priority tool only if current results are insufficient. Unnecessary tool calls are forbidden. Stop immediately once the objective is met.
+- **Minimal Context**: Do not include unrelated code in the context. Use `semble find-related` to collect only necessary chunks.
+- **Selective Reading**: Do not read files over 500 lines in their entirety. Use Skeleton analysis first, then read specific function ranges.
+- **Incremental Output**: Use diff/patch formats instead of rewriting entire files.
+- **Trivial Exception**: Step 0-1 can be skipped for typos or simple comment edits with no logic changes.
+
+**DO NOT load unrelated policy files, full project docs for a single task, roadmap/future-scope notes during implementation, unrelated feature directories, old chat history when an approved artifact exists, or broad directories “just in case”.**
+
+### 💡 Workflow Principle
+> **"Formulate a hypothesis first (Semble for intent, Graph for blast radius), verify the location (Skeleton/LSP), and read only when certain (Read). Critical modifications must be re-validated with Graph."**
+
+### 🛠️ Advanced Token Utilities & Fallbacks
+- **Repomix:** Use `--include` to narrow the analysis scope and prevent token waste (e.g., `npx repomix --include "DizzyAsset/Domain/*"`).
+- **LLMLingua:** Adjust compression rates based on data importance (e.g., rate=0.5 for general context, rate=0.9 for noise reduction). 
+    - **Note:** Installed as a Python library for system compatibility. Use via `/usr/bin/python3 -c "import llmlingua; ..."`.
+- **CLI Failure Fallback:** If CLI tools fail due to environment issues, fallback to traditional `grep` and `find`. **CRITICAL:** Limit the search range extremely narrowly to minimize token waste. // Minimum safety measure to prevent analysis interruption when tools fail.
+
+**For Non-trivial+ work, use `code-review-graph (CLI)` before broad manual exploration. If broader context is needed, state why before loading it. Example: `npx caveman-shrink code-review-graph detect-changes --base HEAD~1`**
 
 ---
 
@@ -65,49 +86,55 @@ Agents MUST adhere to the following rules when submitting CLI results or analysi
 |---|---|---|---|
 | **code-review-graph** | Impact Analysis | `npx caveman-shrink code-review-graph detect-changes` | Do not dump raw results; report a summary of key dependency chains within **30 lines**. |
 | **Repomix** | Large-scale packing | `npx repomix --include "src/**/*.java"` | Avoid full project packing; specify **only required folders**. |
-| **LLMLingua** | Doc/Log Compression | `llmlingua --context [file]` | Perform **forced compression** before permanent documentation of massive build stacks or DB schemas. |
+| **LLMLingua** | Doc/Log Compression | `/usr/bin/python3 -c "import llmlingua; ..."` | Perform **forced compression** before permanent documentation of massive build stacks or DB schemas. |
 
 ---
 
-## 3. Lifecycle Routing
+## 3. Task Classification & Handshake
 
+### Task Classification
 Classify the task stage before acting. Follow the relevant workflow.
+- **Trivial**: Local UI/style, no behavior change.
+- **Non-trivial**: Shared logic, DB reads, indexing flows.
+- **High-Risk**: Sandbox, entitlements, FCP integration, migrations, CI/CD.
 
-- **Planning/PRD/Design:** Read relevant sections in `docs/product/`.
-- **Implementation:** Follow `docs/workflows/implementation-task.md`.
-- **Verification:** Follow `docs/workflows/verification-review.md`.
+### Handshake Protocol
+Before any **Non-trivial** or **High-Risk** action, perform the handshake to obtain explicit approval.
+1. State the classification.
+2. Provide a surgical implementation plan.
+3. List potential side effects and validation steps.
+4. Wait for the Architect's (User) "Go" before implementation.
 
 ---
 
-## 4. Detailed Technical Guidelines
+## 4. Mandatory Lazy-Loaded Policy Triggers
 
-For detailed technical rules, read ONLY the relevant file:
+When a trigger matches, read the policy file before planning or execution. Unread required policy = protocol violation.
 
-- **Swift / naming / style:** `docs/guidelines/apple-coding-style.md`
-- **Comments / documentation:** `docs/guidelines/comments-and-docs.md`
-- **SwiftUI architecture / layers:** `docs/guidelines/swiftui-architecture.md`
-- **State ownership / SSOT:** `docs/guidelines/state-management.md`
-- **Async / Concurrency:** `docs/guidelines/swift-concurrency.md`
-- **SQLite / migrations:** `docs/guidelines/sqlite-migration.md`
-- **File access / bookmarks / sandbox:** `docs/guidelines/macos-file-access.md`
-- **Final Cut Pro integration:** `docs/guidelines/final-cut-pro-integration.md`
-- **Workspace / lifecycle:** `docs/guidelines/workspace-lifecycle.md`
-- **XcodeGen / Project:** `docs/guidelines/xcodegen-project.md`
-- **Search / FTS5 / Ranking:** `docs/guidelines/search-architecture.md`
-- **Duplicate Detection / Hashing:** `docs/guidelines/duplicate-detection.md`
-- **Preview / AVFoundation / Waveform:** `docs/guidelines/preview-engine.md`
-- **AI Analysis / Providers / Tags:** `docs/guidelines/ai-analysis-provider.md`
-- **Semble / Search / Token Economy:** `docs/guidelines/semble-operation-guide.md`
-- **Code Review Graph / Analysis:** `docs/guidelines/code-review-graph-guide.md`
+| Trigger | Required policy file |
+|---|---|
+| Swift naming, styles, Karpathy guidelines | `docs/guidelines/apple-coding-style.md` |
+| Comments, documentation, public API docs | `docs/guidelines/comments-and-docs.md` |
+| Views, ViewModels, SwiftUI architecture | `docs/guidelines/swiftui-architecture.md` |
+| State ownership, SSOT, `@Published`, `@State` | `docs/guidelines/state-management.md` |
+| Async/await, Task, actors, data races | `docs/guidelines/swift-concurrency.md` |
+| SQLite schema, migrations, indexing | `docs/guidelines/sqlite-migration.md` |
+| Sandbox, bookmarks, entitlements, file access | `docs/guidelines/macos-file-access.md` |
+| Final Cut Pro, FCPXML, workflow integration | `docs/guidelines/final-cut-pro-integration.md` |
+| FTS5, Search ranking, duplicate detection | `docs/guidelines/search-architecture.md` |
+| Media metadata, waveforms, AVFoundation | `docs/guidelines/preview-engine.md` |
+| Project config, XcodeGen, build settings | `docs/guidelines/xcodegen-project.md` |
+| Large analysis, impact scope, structural graph | `docs/guidelines/code-review-graph-guide.md` |
+| LLM search, Token economy, Semble operation | `docs/guidelines/semble-operation-guide.md` |
+| AI analysis, tag generation, providers | `docs/guidelines/ai-analysis-provider.md` |
+| Duplicate detection, hashing, hashing logic | `docs/guidelines/duplicate-detection.md` |
+| Workspace lifecycle, background tasks | `docs/guidelines/workspace-lifecycle.md` |
 
 ---
 
 ## 5. Skill Policy
 
-**Do not load all skills by default.**
-Load only the skills relevant to the current task.
-Skills do not expand task scope.
-Product docs and assigned tasks define requirements.
+**Do not load all skills by default.** Load only the skills relevant to the current task. Skills do not expand task scope.
 
 ### `macos-sandbox-security-skill`
 - **Use:** Sandbox, security-scoped bookmarks, entitlements.
@@ -139,32 +166,11 @@ Product docs and assigned tasks define requirements.
 
 ### `serena`
 - **Use:** Precision-first semantic analysis, LSP-based symbol navigation, architectural memory.
-- **Guideline:** `🚀 Serena Integration & Operation Guide`
-
-### `review-and-refactor`
-- **Use:** focused refactor review after behavior works.
-- **Guideline:** Use Serena's `find_referencing_symbols` to verify impact before refactoring.
-
-### `caveman`
-- **Use:** simplify over-complicated local code only.
-
-### `semble`
-- **Use:** Ultra-fast hybrid (semantic + keyword) search for large-scale exploration.
-- **Guideline:** `docs/guidelines/semble-operation-guide.md`
-
+- **Guideline:** `docs/guidelines/serena-integration.md`
 
 ---
 
-## 7. Context Economy
-
-Treat context as expensive.
-- Read only what is needed for the current task.
-- Do not search the whole repository unless architecture must be verified.
-- Prefer assigned task file over full plan.
-
----
-
-## 7. Project Structure
+## 6. Project Structure
 
 - `DizzyAsset/App/`: Entry point & composition.
 - `DizzyAsset/Presentation/`: SwiftUI & ViewModels.
@@ -177,7 +183,7 @@ Treat context as expensive.
 
 ---
 
-## 8. Build & Verification Commands
+## 7. Build & Verification Commands
 
 - `xcodegen generate`: Regenerate project.
 - `xcodebuild -project DizzyAsset.xcodeproj -scheme DizzyAsset -configuration Debug build`: CLI Build.
@@ -188,31 +194,7 @@ Treat context as expensive.
 
 ---
 
-## 9. Task Execution & Risk
-
-### Risk Classification
-- **Trivial:** Local UI/style, no behavior change.
-- **Non-trivial:** Shared logic, DB reads, indexing flows.
-- **High-Risk:** 
-  - Sandbox / entitlements
-  - security-scoped bookmarks
-  - external storage recovery
-  - Final Cut Pro integration
-  - DB migrations or data deletion
-  - Quick Peek / global hotkey / NSPanel
-  - CI/CD / signing / notarization / release
-
-### Stop Conditions
-Stop and report if:
-- build/test fails
-- scope expansion is required
-- protected area must be changed
-- sandbox or external storage behavior is unclear
-- FCP workaround would require hidden copying
-
----
-
-## 10. Protected Areas
+## 8. Protected Areas
 
 **Do not change without explicit approval:**
 - entitlements
@@ -225,7 +207,7 @@ Stop and report if:
 
 ---
 
-## 11. Handoff & Knowledge
+## 9. Handoff & Knowledge
 
 ### Handoff
 Every task must end with a concise handoff. Use `docs/templates/handoff.md`.
@@ -251,7 +233,7 @@ Non-obvious fixes or platform behaviors MUST be documented in `docs/knowledge/YY
 
 ---
 
-## 12. Serena Operation Rules
+## 10. Serena Operation Rules
 
 1. **Precision First**: All **Non-trivial** tasks (shared logic, architectural changes) MUST follow the **Code Exploration Hierarchy** (Section 2A).
 2. **Memory-Driven**: Core architectural decisions and complex logic explanations MUST be recorded in Serena `memories` using `write_memory`.
@@ -262,6 +244,17 @@ Non-obvious fixes or platform behaviors MUST be documented in `docs/knowledge/YY
 
 ---
 
-## 13. Final Authority
+## 11. Incident Boundary (Emergency Lock)
+
+If a protocol violation occurs or is suspected:
+1. STOP all implementation immediately.
+2. REPORT in chat: violated rule, affected target, current state, recovery plan.
+3. NO EXECUTION: Do not create or modify any files without explicit approval.
+
+---
+
+## 12. Final Authority
 
 Agents provide evidence; instruction owner makes final decisions. Do not declare final acceptance.
+
+**Note**: All code comments MUST be written in Korean. For major changes, add one short Korean comment explaining the rationale.
