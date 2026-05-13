@@ -1,9 +1,11 @@
 # Code-Review-Graph CLI Operation Guide
 
-This guide defines the standard procedure for using `code-review-graph` via CLI to maximize token efficiency and structural analysis accuracy.
+This guide defines the standard procedure for using `code-review-graph` via CLI to maximize token efficiency and structural analysis accuracy in the DizzyAsset project.
+
+---
 
 ## 1. Rationale: CLI over MCP
-To reduce system prompt overhead, `code-review-graph` is operated as a CLI tool rather than an always-on MCP server. This saves ~800 tokens per dialogue turn.
+To reduce system prompt overhead, `code-review-graph` is operated as a CLI tool rather than an always-on MCP server. This saves significant tokens per dialogue turn and prevents context saturation.
 
 ## 2. Standard Command Prefix
 All agents MUST use the following prefix to ensure output is optimized for LLM consumption:
@@ -22,8 +24,8 @@ npx caveman-shrink code-review-graph [command]
 - **Command:** `npx caveman-shrink code-review-graph detect-changes --base HEAD~1`
 
 ### C. `build` / `update` (Maintenance)
-- **Use when:** Significant file changes have occurred and the graph needs synchronization.
-- **Command:** `code-review-graph update` (Shrink wrapper not required for background maintenance).
+- **Use when:** Significant file changes have occurred (add, delete, rename) and the graph needs synchronization.
+- **Command:** `npx caveman-shrink code-review-graph update`
 
 ## 4. Trigger Scenarios
 - **Non-trivial Task:** Run `detect-changes` to identify affected downstream modules.
@@ -31,4 +33,4 @@ npx caveman-shrink code-review-graph [command]
 - **Validation Phase:** Run `detect-changes` again after modification to verify no unintended side effects.
 
 ## 5. Protocol Adherence
-Agents must report the results of these CLI calls in their handshake or validation reports as evidence of structural verification.
+Agents must report the results of these CLI calls in their handshake or validation reports as evidence of structural verification. Failure to update the graph after structural changes is a protocol violation.

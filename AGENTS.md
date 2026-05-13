@@ -45,8 +45,9 @@ Agents MUST minimize token usage without skipping mandatory policy checks. Unnec
 - **Step 0: [Semble]** - First obtain relevant code snippets for narrow/local discovery or literal prose search.
     - **Boundary:** "Where is specific logic?" (Keyword/Intent-focused search)
     - **Note:** Pass a git URL or local path as `repo` to index it on demand; indexes are cached for the session.
-- **Step 1: [code-review-graph (CLI)]** - Use first when the task is Non-trivial, the blast radius is unclear, or structural dependencies matter. Run via `npx caveman-shrink code-review-graph`.
-    - **Boundary:** "What breaks if I change this file?" (Dependency & Blast Radius analysis)
+- **Step 1: [code-review-graph]** - Use first when the task is Non-trivial, the blast radius is unclear, or structural dependencies matter.
+    - **Boundary:** "What breaks if I change this file?" (Dependency & Blast Radius Analysis)
+    - **Connection order:** MCP tools first → CLI (`npx caveman-shrink code-review-graph`) fallback. CLI takes priority only on hosts with MCP limits (antigravity, 50-cap).
     - **Maintenance:** Must run `code-review-graph update` after major refactoring or structural changes. Cross-reference with `xcodegen generate` if files are added/removed. // Essential procedure for reflecting latest code structure.
 - **Step 1B: [Apple Docs / Swift Specs]** - For platform APIs (SwiftUI, AVFoundation, etc.), use `search_web` or `read_url_content` for official docs. Avoid broad scraping; focus on specific snippets.
 - **Step 1.5: [File Skeleton]** - Verify file maps using Serena's `get_symbols_overview`.
