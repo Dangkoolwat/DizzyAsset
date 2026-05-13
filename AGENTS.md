@@ -44,7 +44,7 @@ Agents MUST minimize token usage without skipping mandatory policy checks. Unnec
 ### 2A. Code Exploration Hierarchy (🏆 Tool Hierarchy)
 - **Step 0: [Semble]** - First obtain relevant code snippets for narrow/local discovery or literal prose search.
     - **Boundary:** "Where is specific logic?" (Keyword/Intent-focused search)
-    - **Note:** Pass a git URL or local path as `repo` to index it on demand; indexes are cached for the session.
+    - **Note:** Auto-indexing is disabled for performance. Pass `repo="."` or a git URL explicitly to index on demand. Indexes are cached for the session.
 - **Step 1: [code-review-graph]** - Use first when the task is Non-trivial, the blast radius is unclear, or structural dependencies matter.
     - **Boundary:** "What breaks if I change this file?" (Dependency & Blast Radius Analysis)
     - **Connection order:** MCP tools first → CLI (`npx caveman-shrink code-review-graph`) fallback. CLI takes priority only on hosts with MCP limits (antigravity, 50-cap).

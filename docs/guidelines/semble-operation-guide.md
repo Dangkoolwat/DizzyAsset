@@ -46,13 +46,13 @@ _TREE_SITTER_LANGUAGES: frozenset[str] = frozenset([
 
 ## 3. MCP Configuration
 
-The MCP configuration for various tools should point to the **patched local executable** and include the mandatory project root argument.
+The MCP configuration for various tools should point to the **patched local executable**. The `args` should be set to `[]` (empty array) to prevent automatic indexing on startup, which can cause performance issues in large projects.
 
 ### Antigravity (`mcp_config.json`)
 ```json
 "semble": {
   "command": "/Users/sanghyoukjin/.local/bin/semble",
-  "args": ["."]
+  "args": []
 }
 ```
 
@@ -60,7 +60,7 @@ The MCP configuration for various tools should point to the **patched local exec
 ```toml
 [mcp_servers.semble]
 command = "/Users/sanghyoukjin/.local/bin/semble"
-args = ["."]
+args = []
 ```
 
 ### OpenCode (`~/.config/opencode/opencode.json`)
@@ -68,15 +68,29 @@ args = ["."]
 "semble": {
   "type": "local",
   "enabled": true,
-  "command": ["/Users/sanghyoukjin/.local/bin/semble", "."]
+  "command": ["/Users/sanghyoukjin/.local/bin/semble"]
 }
 ```
 
 ---
 
-## 4. Verification
+## 4. Heavy Loading & Zombie Processes (Mandatory Operational Policy)
 
-To verify that the patch is correctly applied and Semble is functional, run a search query:
+In large projects (e.g., massive `.git` folders or many binaries), automatic indexing and file watching can cause significant system overhead or "Python zombie processes".
+
+### Handling Strategy
+1. **Disabled Auto-Indexing**: Always keep `args: []` in the MCP config.
+2. **On-Demand Indexing**: Explicitly pass the repository path (e.g., `repo="."`) only when calling the `search` tool for the first time in a session.
+3. **Zombie Cleanup**: If the system becomes unresponsive or many `semble` processes are seen, run the following in the terminal:
+   ```bash
+   pkill -f "semble"
+   ```
+
+---
+
+## 5. Verification
+
+To verify that the patch is correctly applied and Semble is functional, run a search query manually:
 
 ```bash
 semble search "test query"
