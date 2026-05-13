@@ -71,8 +71,6 @@ Agents MUST minimize token usage without skipping mandatory policy checks. Unnec
 
 ### 🛠️ Advanced Token Utilities & Fallbacks
 - **Repomix:** Use `--include` to narrow the analysis scope and prevent token waste (e.g., `npx repomix --include "DizzyAsset/Domain/*"`).
-- **LLMLingua:** Adjust compression rates based on data importance (e.g., rate=0.5 for general context, rate=0.9 for noise reduction). 
-    - **Note:** Installed as a Python library for system compatibility. Use via `/usr/bin/python3 -c "import llmlingua; ..."`.
 - **CLI Failure Fallback:** If CLI tools fail due to environment issues, fallback to traditional `grep` and `find`. **CRITICAL:** Limit the search range extremely narrowly to minimize token waste. // Minimum safety measure to prevent analysis interruption when tools fail.
 
 **For Non-trivial+ work, use `code-review-graph (CLI)` before broad manual exploration. If broader context is needed, state why before loading it. Example: `npx caveman-shrink code-review-graph detect-changes --base HEAD~1`**
@@ -87,7 +85,6 @@ Agents MUST adhere to the following rules when submitting CLI results or analysi
 |---|---|---|---|
 | **code-review-graph** | Impact Analysis | `npx caveman-shrink code-review-graph detect-changes` | Do not dump raw results; report a summary of key dependency chains within **30 lines**. |
 | **Repomix** | Large-scale packing | `npx repomix --include "src/**/*.java"` | Avoid full project packing; specify **only required folders**. |
-| **LLMLingua** | Doc/Log Compression | `/usr/bin/python3 -c "import llmlingua; ..."` | Perform **forced compression** before permanent documentation of massive build stacks or DB schemas. |
 
 ---
 
