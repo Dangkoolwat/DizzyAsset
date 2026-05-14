@@ -2,6 +2,16 @@
 
 This document outlines the installation and maintenance procedures for **Semble**, the ultra-efficient code exploration tool used in this project.
 
+> **⚠️ CRITICAL (Swift Project Limitation):** This is a Swift/Xcode project. `semble_rs` AST-based dependency analysis (`deps`, `impact` subcommands) does **NOT** work for Swift. Only `semble_rs search` (and `search --compact`) is permitted. All structural/impact analysis MUST use `code-review-graph` MCP or `Serena` MCP instead. See `AGENTS.md` Section 2A for the 3-Stage Pipeline.
+
+## Permitted Commands
+| Command | Status | Notes |
+|---|---|---|
+| `semble_rs search --compact` | ✅ Allowed | Primary discovery tool (Stage 1) |
+| `semble_rs search` | ✅ Allowed | Verbose variant |
+| `semble_rs deps` | ❌ **PROHIBITED** | AST-based, does not support Swift |
+| `semble_rs impact` | ❌ **PROHIBITED** | AST-based, does not support Swift |
+
 ---
 
 ## 1. Installation

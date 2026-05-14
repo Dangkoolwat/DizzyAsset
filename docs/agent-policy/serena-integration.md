@@ -62,3 +62,19 @@
 
 - **"No active project" 에러 발생 시**: 에이전트에게 `list_repos`로 등록 여부를 확인하게 한 뒤, `activate_project`를 다시 명령하세요.
 - **분석 속도가 느릴 경우**: `get_symbols_overview`의 `depth`를 조정하거나 특정 디렉토리로 범위를 좁히도록 지시하세요.
+
+---
+
+## 6. MCP Optimization Rules (from AGENTS.md Section 10)
+
+These rules are authoritative and enforced by `AGENTS.md`.
+
+1. **Precision First**: All **Non-trivial** tasks MUST follow the **3-Stage Exploration Pipeline** (`docs/agent-policy/3-stage-pipeline.md`).
+2. **Memory-Driven**: Core architectural decisions and complex logic explanations MUST be recorded in Serena `memories` using `write_memory`.
+3. **MCP Tool Whitelist**:
+   - Retain ONLY the following tools; all others MUST be set as `disabledTools`:
+     - **Read-only (Stage 2 analysis):** `get_symbols_overview`, `find_symbol`, `find_referencing_symbols`, `search_for_pattern`
+     - **Write (Stage 3 implementation):** `replace_symbol_body`, `rename_symbol`
+   - **Other Analysis Tools**: Remove from MCP list and utilize via CLI (`run_command`) only.
+4. **LSP-Safe Refactoring**: Use `rename_symbol` to ensure type-safe changes across the entire codebase.
+

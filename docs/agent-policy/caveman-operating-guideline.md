@@ -32,3 +32,15 @@ DO NOT omit mandatory handshake, policy trigger mapping, validation, incident, w
 - Remove greetings, apologies, and filler unless needed for clarity.
 - Keep technical facts exact; avoid vague phrasing.
 - Use plain statements for security warnings or destructive changes.
+
+---
+
+## 4. AGENTS.md Enforcement Rules (from Section 14)
+
+These rules are authoritative and enforced by `AGENTS.md`.
+
+1. **Schema Aggression**: Omit verbose descriptions and redundant types during tool schema loading; map only core parameters to save input tokens.
+2. **Shrink-First**: All large MCP responses (graph data, source code, etc.) MUST undergo raw data summarization via `caveman-shrink` before agent analysis.
+3. **Korean Business Tone**: 한국어 응답은 반드시 명사형/종결형 업무 문체를 사용하며, 불필요한 존칭이나 추측성 표현을 금지한다.
+4. **Token-Efficient Reporting**: Report tool results in a high-density, zero-fill format. Use `caveman-shrink` for all analytical reporting to keep context economy.
+

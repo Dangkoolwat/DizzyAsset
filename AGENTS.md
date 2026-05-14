@@ -1,10 +1,10 @@
 # AGENTS.md
 
-**Document version:** v2.0  
+**Document version:** v2.1  
 **Project:** DizzyAsset  
 **Document role:** Repository-level instruction router and agent operating guide  
 **Status:** Living document  
-**Last updated:** 2026-05-13
+**Last updated:** 2026-05-14
 
 ---
 
@@ -28,7 +28,7 @@ Priority order:
 1. User instructions in the current session
 2. Nearest `AGENTS.md` (this file)
 3. Assigned DA task
-4. Product Docs (`docs/product/` - Plan, Design, PRD)
+4. Product Docs (`docs/product/dizzyasset_development_plan.md`, `docs/product/dizzyasset_design_doc.md`, `docs/product/dizzyasset_v1_prd.md`)
 5. **Safety & platform guidelines** in `docs/guidelines/`
 6. **Agent Policy & Operation guides** in `docs/agent-policy/`
 7. **Existing code patterns**, if not conflicting with any above
@@ -40,54 +40,22 @@ If rules conflict, follow the higher-priority source and briefly report the conf
 
 ## 2. Context Economy & Tool Efficiency
 
-Agents MUST minimize token usage without skipping mandatory policy checks. Unnecessary tool calls or broad file reading is strictly forbidden.
+Agents MUST minimize token usage without skipping mandatory policy checks. Unnecessary tool calls or broad file reading is strictly forbidden. Treat context as limited and expensive.
 
-### 2C. Caveman Behavior & MCP Rule
-- **Activation**: Always Active
-- **Style**: Respond terse like smart caveman. Drop articles, filler, pleasantries. Keep technical accuracy.
-- **Korean Protocol**: 한국어 응답 시 모든 문장을 명사형/종결형 업무 문체로 작성한다 (예: '~ 완료', '~ 확인'). 존칭 및 미사여구 배제.
-- **MCP Optimization**:
-  - Intercept out-of-band MCP server descriptions.
-  - Use `caveman-shrink` proxy instructions to condense schema properties.
-  - Consume minimum input tokens when mapping external tools.
+### Explicit Context Boundaries
+- **Read Only What Is Needed**: `AGENTS.md`, assigned task prompt, affected files, nearby local patterns, and required guide documents.
+- **Do Not Read By Default**: Full PRD, full Design Doc, full Development Plan, unrelated lifecycle docs, unrelated feature folders, old chat history, or superseded artifacts. Load broader context only when necessary and explain why.
 
-### 2A. Code Exploration Hierarchy (🏆 Tool Hierarchy)
-- **Step 0: [Semble]** - First obtain relevant code snippets for narrow/local discovery or literal prose search.
-    - **Boundary:** "Where is specific logic?" (Keyword/Intent-focused search)
-    - **Note:** Auto-indexing is disabled for performance. Pass `repo="."` or a git URL explicitly to index on demand. Indexes are cached for the session.
-- **Step 1: [code-review-graph]** - Use first when the task is Non-trivial, the blast radius is unclear, or structural dependencies matter.
-    - **Boundary:** "What breaks if I change this file?" (Dependency & Blast Radius Analysis)
-    - **Connection order:** MCP Proxy (Wrapped in `caveman-shrink`) first → CLI fallback. Use whitelisted "Power Six" tools for maximum efficiency.
-    - **Maintenance:** Must run `code-review-graph update` after major refactoring or structural changes.
-- **Step 1B: [Apple Docs / Swift Specs]** - For platform APIs (SwiftUI, AVFoundation, etc.), use `search_web` or `read_url_content` for official docs. Avoid broad scraping; focus on specific snippets.
-- **Step 1.5: [File Skeleton]** - Verify file maps using Serena's `get_symbols_overview`.
-    - **Fallback:** If Serena MCP is restricted, use CLI-based symbol extraction via `serena project index` results or read `.serena/project.yml` for configuration. (Read-only analysis tools are permitted for efficient navigation).
-- **Step 2: [Serena (LSP)]** - Perform precision navigation to specific symbol definitions and references.
-    - **Permission:** Read-only analysis tools are permitted at all times for efficient navigation.
-- **Step 3: [Grep/Read]** - Conduct deep, precision reading only within confirmed scopes (Surgical Read: Strictly limit reading to specific Line Ranges containing the necessary functions or logic).
-- **Step 4: [Git]** - Review change history and perform final verification.
+### 2A. 3-Stage Exploration Pipeline (🏆 Swift-Adapted MCP-Only Workflow)
 
-### 🛡️ Efficiency Constraints
-- **Gating Principle**: Proceed to the next priority tool only if current results are insufficient. Unnecessary tool calls are forbidden. Stop immediately once the objective is met.
-- **Minimal Context**: Do not include unrelated code in the context. Use `semble find-related` to collect only necessary chunks.
-- **Selective Reading**: Do not read files over 500 lines in their entirety. Use Skeleton analysis first, then read specific function ranges.
-- **Incremental Output**: Use diff/patch formats instead of rewriting entire files.
-- **Trivial Exception**: Step 0-1 can be skipped for typos or simple comment edits with no logic changes.
+**MUST READ BEFORE NON-TRIVIAL TASKS:** `docs/agent-policy/3-stage-pipeline.md`
 
-**DO NOT load unrelated policy files, full project docs for a single task, roadmap/future-scope notes during implementation, unrelated feature directories, old chat history when an approved artifact exists, or broad directories “just in case”.**
+- **Stage 1 (Discovery):** `semble_rs search` ONLY (AST commands prohibited for Swift).
+- **Stage 2 (Impact Analysis):** Use `code-review-graph` and `Serena` MCP tools.
+- **Stage 3 (Verification):** Surgical read and LSP-based symbol navigation.
+- **Rule:** Do not read full files > 500 lines. Stop immediately once the objective is met.
 
-### 💡 Workflow Principle
-> **"Formulate a hypothesis first (Semble for intent, Graph for blast radius), verify the location (Skeleton/LSP), and read only when certain (Read). Critical modifications must be re-validated with Graph."**
-
-### 🛠️ Advanced Token Utilities & Fallbacks
-- **Repomix:** Use `--include` to narrow the analysis scope and prevent token waste (e.g., `npx repomix --include "DizzyAsset/Domain/**"`).
-- **CLI Failure Fallback:** If CLI tools fail due to environment issues, fallback to traditional `grep` and `find`. **CRITICAL:** Limit the search range extremely narrowly to minimize token waste. // Minimum safety measure to prevent analysis interruption when tools fail.
-
-**For Non-trivial+ work, use `code-review-graph` (MCP Proxy) before broad manual exploration. If the MCP server is unavailable, fallback to CLI: `npx caveman-shrink code-review-graph detect-changes --base HEAD~1`**
-
----
-
-## 2B. Token Shield
+### 2B. Token Shield
 
 Agents MUST adhere to the following rules when submitting CLI results or analysis reports.
 
@@ -96,19 +64,44 @@ Agents MUST adhere to the following rules when submitting CLI results or analysi
 | **code-review-graph** | Impact Analysis | `npx caveman-shrink code-review-graph detect-changes` | Do not dump raw results; report a summary of key dependency chains within **30 lines**. |
 | **Repomix** | Large-scale packing | `npx repomix --include "DizzyAsset/Domain/**"` | Avoid full project packing; specify **only required folders**. |
 
+### 2C. Caveman Behavior & MCP Rule
+
+> **This rule is always active. No trigger required.** See Section 4 for deeper Caveman style guidance (`docs/agent-policy/caveman-operating-guideline.md`).
+
+- **Activation**: Always Active
+- **Style**: Respond terse like smart caveman. Drop articles, filler, pleasantries. Keep technical accuracy.
+- **Korean Protocol**: 한국어 응답 시 모든 문장을 명사형/종결형 업무 문체로 작성한다 (예: '~ 완료', '~ 확인'). 존칭 및 미사여구 배제.
+- **MCP Optimization**:
+  - Intercept out-of-band MCP server descriptions.
+  - Use `caveman-shrink` proxy instructions to condense schema properties.
+  - Consume minimum input tokens when mapping external tools.
+
 ---
 
-## 3. Task Classification & Handshake
+## 3. Task Classification, Lifecycle Routing & Handshake
 
-### Task Classification
-Classify the task stage before acting. Follow the relevant workflow.
+### Lifecycle Routing
+Classify the task stage before acting and load only relevant documents:
+- **Planning/PRD/Design:** Read relevant sections in `docs/product/`.
+- **Implementation:** Read this file, the assigned task, and follow `docs/workflows/implementation-task.md`.
+- **Verification:** Read the diff and follow `docs/workflows/verification-review.md`.
+
+### Risk Classification
 - **Trivial**: Local UI/style, no behavior change.
 - **Non-trivial**: Shared logic, DB reads, indexing flows.
-- **High-Risk**: Sandbox, entitlements, FCP integration, migrations, CI/CD.
+- **High-Risk**: Sandbox, entitlements, security-scoped bookmarks, FCP integration, DB migrations/data deletion, CI/CD.
+
+### Stop Conditions (Emergency Halts)
+Stop and report immediately if:
+- Build/test fails.
+- Scope expansion is required.
+- A protected area must be changed without prior approval.
+- Sandbox or external storage behavior is unclear.
+- FCP workaround would require hidden media copying.
 
 ### Handshake Protocol
-Before any **Non-trivial** or **High-Risk** action, perform the handshake to obtain explicit approval.
-1. State the classification.
+Before any **Non-trivial** or **High-Risk** action, perform the handshake to obtain explicit approval:
+1. State the risk classification and lifecycle stage.
 2. Provide a surgical implementation plan.
 3. List potential side effects and validation steps.
 4. Wait for the Architect's (User) "Go" before implementation.
@@ -133,11 +126,13 @@ When a trigger matches, read the policy file before planning or execution. Unrea
 | Media metadata, waveforms, AVFoundation | `docs/guidelines/preview-engine.md` |
 | Project config, XcodeGen, build settings | `docs/guidelines/xcodegen-project.md` |
 | `code-review-graph`, knowledge graph, structural analysis, impact radius, blast radius | `docs/agent-policy/code-review-graph-guide.md` |
-| `semble`, code search, semantic search, vector index, zombie processes | `docs/agent-policy/semble-operation-guide.md` and `docs/agent-policy/semble-troubleshooting.md` |
+| `semble_rs`, code search, semantic search, vector index, zombie processes | `docs/agent-policy/semble-operation-guide.md` and `docs/agent-policy/semble-troubleshooting.md` |
+| Serena MCP, LSP navigation, symbol search, `find_symbol`, `find_referencing_symbols`, architectural memory | `docs/agent-policy/serena-integration.md` |
 | AI analysis, tag generation, providers | `docs/guidelines/ai-analysis-provider.md` |
 | Duplicate detection, hashing, hashing logic | `docs/guidelines/duplicate-detection.md` |
 | Workspace lifecycle, background tasks | `docs/guidelines/workspace-lifecycle.md` |
 | Caveman style, MCP optimization, token efficiency, caveman-shrink | `docs/agent-policy/caveman-operating-guideline.md` |
+| `AGENTS.md` modification, policy document edit, `docs/agent-policy/` changes | `docs/history.md` |
 
 ---
 
@@ -145,37 +140,18 @@ When a trigger matches, read the policy file before planning or execution. Unrea
 
 **Do not load all skills by default.** Load only the skills relevant to the current task. Skills do not expand task scope.
 
-### `macos-sandbox-security-skill`
-- **Use:** Sandbox, security-scoped bookmarks, entitlements.
-- **Guideline:** `docs/guidelines/macos-file-access.md`
-
-### `sqlite-fts-optimizer`
-- **Use:** SQLite schema, FTS5, ranking algorithms.
-- **Guideline:** `docs/guidelines/sqlite-migration.md`, `docs/guidelines/search-architecture.md`, `docs/guidelines/duplicate-detection.md`
-
-### `avfoundation-media-pro`
-- **Use:** Media metadata, hashing, waveforms, preview playback.
-- **Guideline:** `docs/guidelines/macos-file-access.md` (for file handling), `docs/guidelines/preview-engine.md`, `docs/guidelines/duplicate-detection.md`, `docs/guidelines/ai-analysis-provider.md`
-
-### `swiftui-expert-skill`
-- **Use:** Views, ViewModels, state management.
-- **Guideline:** `docs/guidelines/swiftui-architecture.md`
-
-### `swift-concurrency`
-- **Use:** Async/await, Task, actor isolation.
-- **Guideline:** `docs/guidelines/swift-concurrency.md`
-
-### `karpathy-guidelines`
-- **Use:** Surgical changes, simplicity.
-- **Guideline:** `docs/guidelines/apple-coding-style.md`
-
-### `xcode-project-analyzer`
-- **Use:** `project.yml`, XcodeGen, schemes, build settings.
-- **Guideline:** `docs/guidelines/xcodegen-project.md`
-
-### `serena`
-- **Use:** Precision-first semantic analysis, LSP-based symbol navigation, architectural memory.
-- **Guideline:** `docs/agent-policy/serena-integration.md`
+| Skill | Use Case | Guideline / Policy |
+|---|---|---|
+| `macos-sandbox-security-skill` | Sandbox, bookmarks, entitlements | `docs/guidelines/macos-file-access.md` |
+| `sqlite-fts-optimizer` | SQLite schema, FTS5, ranking | `docs/guidelines/sqlite-migration.md`, `docs/guidelines/search-architecture.md`, `docs/guidelines/duplicate-detection.md` |
+| `avfoundation-media-pro` | Metadata, waveforms, preview | `docs/guidelines/macos-file-access.md`, `docs/guidelines/preview-engine.md`, `docs/guidelines/duplicate-detection.md`, `docs/guidelines/ai-analysis-provider.md` |
+| `swiftui-expert-skill` | Views, ViewModels, state | `docs/guidelines/swiftui-architecture.md` |
+| `swift-concurrency` | Async/await, Task, actor | `docs/guidelines/swift-concurrency.md` |
+| `karpathy-guidelines` | Surgical changes, simplicity | `docs/guidelines/apple-coding-style.md` |
+| `xcode-project-analyzer` | `project.yml`, XcodeGen, builds | `docs/guidelines/xcodegen-project.md` |
+| `serena` | LSP navigation, architecture memory | `docs/agent-policy/serena-integration.md` |
+| `review-and-refactor` | Local refactor, readability | Use Serena's `find_referencing_symbols` |
+| `caveman` | Simplify code, token efficiency | `docs/agent-policy/caveman-operating-guideline.md` |
 
 ---
 
@@ -213,13 +189,24 @@ When a trigger matches, read the policy file before planning or execution. Unrea
 - release packaging
 - database migrations that delete or rewrite user data
 - keychain / secrets
+- **Core policy documents (`AGENTS.md`, `docs/agent-policy/*`)** — See Section 8A.
+
+### 8A. Core Policy Document Protection (Highest Difficulty & Highest Risk)
+
+Modifying `AGENTS.md` or any file under `docs/agent-policy/` is classified as **Highest Difficulty and Highest Risk**. ALL agents — regardless of model speed or capability — MUST follow these 5 mandatory steps:
+
+1. **Mandatory History Audit & Sequential Thinking**: Before ANY edit, read `docs/history.md` and relevant git logs. Produce a `[Reasoning]` block explaining: what you plan to change, why, and what existing context must be preserved.
+2. **Zero Context Contamination**: Arbitrary deletion, "clean-up", or reorganization is STRICTLY FORBIDDEN. Preserve 100% of existing context. If you believe something should be removed, you MUST get explicit Architect approval first.
+3. **Lazy-Loading Architecture**: `AGENTS.md` MUST remain a lean router. Detailed instructions belong in `docs/agent-policy/` sub-documents. Do not bloat `AGENTS.md`.
+4. **Token-Efficient & Unambiguous**: Write in short, assertive English so other agents (including weaker models) cannot misinterpret. No ambiguity.
+5. **Detailed Accountability Report**: Immediately after the edit, produce a report listing every addition, modification, and deletion with line-level granularity.
 
 ---
 
 ## 9. Handoff & Knowledge
 
 ### Handoff
-Every task must end with a concise handoff. Use `docs/templates/handoff.md`.
+Every task must end with a concise handoff. Use `docs/templates/handoff.md`. *(If template is missing, include all fields listed below directly in chat.)*
 **Handoff MUST include:**
 - Task ID
 - Risk level
@@ -244,22 +231,19 @@ Non-obvious fixes or platform behaviors MUST be documented in `docs/knowledge/YY
 
 ## 10. Serena Operation Rules
 
-1. **Precision First**: All **Non-trivial** tasks (shared logic, architectural changes) MUST follow the **Code Exploration Hierarchy** (Section 2A).
-2. **Memory-Driven**: Core architectural decisions and complex logic explanations MUST be recorded in Serena `memories` using `write_memory`.
-3. **MCP Optimization**:
-   - **Serena**: Retain ONLY `replace_symbol_body` and `rename_symbol`; all others MUST be set as `disabledTools`.
-   - **Other Analysis Tools**: Remove from MCP list and utilize via CLI (`run_command`) only.
-4. **LSP-Safe Refactoring**: Use `rename_symbol` to ensure type-safe changes across the entire codebase.
+**MUST READ:** `docs/agent-policy/serena-integration.md`
+- Enforces Precision First (3-Stage Pipeline).
+- Requires Memory-Driven development (`write_memory`).
+- Restricts MCP tool usage (Whitelist enforced: read-only tools + `replace_symbol_body`/`rename_symbol`).
 
 ---
 
 ## 11. Code Review Graph Operation Rules
 
-1.  **Unified MCP Mode**: All agents MUST use the `code-review-graph` MCP server wrapped via `caveman-shrink` for all structural analysis tasks.
-2.  **Tool Whitelist (The Power Six)**: Focus only on the primary tools (`query_graph_tool`, `semantic_search_nodes_tool`, `detect_changes_tool`, `get_review_context_tool`, `get_impact_radius_tool`, `get_architecture_overview_tool`) to stay within 50-tool execution limits.
-3.  **Reporting Standard**: Do not dump raw output from these tools. Report a concise summary of key dependency chains or structural insights within **30 lines** (refer to Section 2B Token Shield).
-4.  **CLI Fallback Protocol**: If the MCP server fails, fallback to `npx caveman-shrink code-review-graph <subcommand>`. Refer to `docs/agent-policy/code-review-graph-guide.md` for mapping.
-5.  **Impact Gating**: Non-trivial changes MUST be preceded by a `detect_changes_tool` or `get_impact_radius_tool` run to verify the blast radius.
+**MUST READ:** `docs/agent-policy/code-review-graph-guide.md`
+- Use unified MCP mode wrapped via `caveman-shrink`.
+- Limit usage to "Power Six" tools.
+- Never dump raw output > 30 lines.
 
 ---
 
@@ -269,6 +253,42 @@ If a protocol violation occurs or is suspected:
 1. STOP all implementation immediately.
 2. REPORT in chat: violated rule, affected target, current state, recovery plan.
 3. NO EXECUTION: Do not create or modify any files without explicit approval.
+
+---
+
+## 12A. High-Risk & Integrity Guardrails (3 Hard Rules)
+
+> **⚠️ MANDATORY for ALL agents, ALL models (fast/slow/flash/thinking), NO exceptions.**
+
+These 3 rules exist to prevent runaway modifications by fast-acting models. Violation of any rule is a **critical protocol breach**.
+
+### Rule 1: Sequential Thinking / Stop-and-Think
+Before executing ANY code modification tool (`replace_file_content`, `multi_replace_file_content`, `replace_symbol_body`, `insert_before_symbol`, `insert_after_symbol`, etc.), the agent MUST output a `[Reasoning]` block in plain text declaring:
+- **What** line(s) are being changed and **why**.
+- **How** existing logic is preserved (or why removal is justified with Architect approval).
+- **What** could break if this change is wrong.
+
+Skipping this step is a protocol violation, even if the fix seems trivial.
+
+### Rule 2: Compile-Gated Verification
+
+> **Scope:** Applies to all tasks that include at least one Swift source file change. Documentation-only edits (`.md`, `.yml`, policy files) are exempt but MUST be explicitly noted as "doc-only" in the handoff.
+
+Before declaring any task complete, the agent MUST run the build command:
+```bash
+xcodebuild -project DizzyAsset.xcodeproj -scheme DizzyAsset -configuration Debug build
+```
+The agent MUST confirm `Exit code 0` (or `** BUILD SUCCEEDED **`) in the output and include the evidence in the handoff report. **Claiming success via text assertion alone without running the build is a protocol violation.**
+
+### Rule 3: Atomic Rollback Protocol
+If a code modification causes a build failure:
+1. The agent gets exactly **ONE (1) additional attempt** to fix the issue.
+2. If the second attempt also fails, the agent MUST immediately execute:
+   ```bash
+   git checkout -- <broken-file(s)>
+   ```
+3. After rollback, the agent MUST report to the Architect: what was attempted, why it failed twice, and what the original state has been restored to.
+4. **Leaving the codebase in a broken state is a CRITICAL violation.** The agent must never abandon a broken build without rollback.
 
 ---
 
@@ -282,16 +302,14 @@ Agents provide evidence; instruction owner makes final decisions. Do not declare
 
 ## 14. Caveman Mode & MCP Optimization (v4.3-caveman)
 
-1. **Schema Aggression**: Omit verbose descriptions and redundant types during tool schema loading; map only core parameters to save input tokens.
-2. **Shrink-First**: All large MCP responses (graph data, source code, etc.) MUST undergo raw data summarization via `caveman-shrink` before agent analysis.
-3. **Korean Business Tone**: 한국어 응답은 반드시 명사형/종결형 업무 문체를 사용하며, 불필요한 존칭이나 추측성 표현을 금지한다.
-4. **Token-Efficient Reporting**: Report tool results in a high-density, zero-fill format. Use `caveman-shrink` for all analytical reporting to keep context economy.
+**MUST READ:** `docs/agent-policy/caveman-operating-guideline.md`
+- Aggressively shrink schemas and tool outputs via `caveman-shrink`.
+- Maintain a concise, noun-ended Korean business tone.
 
 ---
 
 ## 15. Repomix Operation Rules
 
-1. **Scope Targeting**: ALWAYS use the `--include` flag to specify only the relevant modules or directories (e.g., `npx repomix --include "DizzyAsset/Domain/**"`).
-2. **Ignore Patterns**: Use `--ignore` or ensure `.repomixignore` excludes non-source files (e.g., `.xcodeproj`, `.xcassets`, `DerivedData`, `.git`).
-3. **Token Efficiency**: Combine with `caveman-shrink` if the output is still too large.
-4. **Usage Gating**: Only use Repomix when the prioritized hierarchy (Semble -> CRG -> Serena) is insufficient for comprehensive context.
+**MUST READ:** `docs/agent-policy/repomix-operation-guide.md`
+- ALWAYS target scope with `--include` (e.g., `DizzyAsset/Domain/**`).
+- Token optimization and usage gating enforced.

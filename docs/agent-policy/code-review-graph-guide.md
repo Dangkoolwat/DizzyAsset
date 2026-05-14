@@ -55,3 +55,16 @@ For administrative tasks not covered by MCP tools, use these CLI commands:
 
 ### 🛡️ Token Defense Rule
 Do not dump raw output from these tools if they exceed 30 lines. Summarize key dependency chains and structural insights for the Architect.
+
+---
+
+## 5. Mandatory Operation Rules (from AGENTS.md Section 11)
+
+These rules are authoritative and enforced by `AGENTS.md`.
+
+1. **Unified MCP Mode**: All agents MUST use the `code-review-graph` MCP server wrapped via `caveman-shrink` for all structural analysis tasks.
+2. **Tool Whitelist (The Power Six)**: Focus only on the primary tools (`query_graph_tool`, `semantic_search_nodes_tool`, `detect_changes_tool`, `get_review_context_tool`, `get_impact_radius_tool`, `get_architecture_overview_tool`) to stay within 50-tool execution limits.
+3. **Reporting Standard**: Do not dump raw output. Report a concise summary of key dependency chains within **30 lines** (refer to `AGENTS.md` Section 2B Token Shield).
+4. **CLI Fallback Protocol**: If the MCP server fails, fallback to `npx caveman-shrink code-review-graph <subcommand>`. See Section 2 above for mapping.
+5. **Impact Gating**: Non-trivial changes MUST be preceded by a `detect_changes_tool` or `get_impact_radius_tool` run to verify the blast radius.
+
