@@ -30,8 +30,9 @@ Priority order:
 3. Assigned DA task
 4. Product Docs (`docs/product/` - Plan, Design, PRD)
 5. **Safety & platform guidelines** in `docs/guidelines/`
-6. **Existing code patterns**, if not conflicting with any above
-7. **Style and non-critical guidelines** in `docs/guidelines/`
+6. **Agent Policy & Operation guides** in `docs/agent-policy/`
+7. **Existing code patterns**, if not conflicting with any above
+8. **Style and non-critical guidelines** in `docs/guidelines/`
 
 If rules conflict, follow the higher-priority source and briefly report the conflict.
 
@@ -47,8 +48,8 @@ Agents MUST minimize token usage without skipping mandatory policy checks. Unnec
     - **Note:** Auto-indexing is disabled for performance. Pass `repo="."` or a git URL explicitly to index on demand. Indexes are cached for the session.
 - **Step 1: [code-review-graph]** - Use first when the task is Non-trivial, the blast radius is unclear, or structural dependencies matter.
     - **Boundary:** "What breaks if I change this file?" (Dependency & Blast Radius Analysis)
-    - **Connection order:** MCP tools first → CLI (`npx caveman-shrink code-review-graph`) fallback. CLI takes priority only on hosts with MCP limits (antigravity, 50-cap).
-    - **Maintenance:** Must run `code-review-graph update` after major refactoring or structural changes. Cross-reference with `xcodegen generate` if files are added/removed. // Essential procedure for reflecting latest code structure.
+    - **Connection order:** MCP Proxy (Wrapped in `caveman-shrink`) first → CLI fallback. Use whitelisted "Power Six" tools for maximum efficiency.
+    - **Maintenance:** Must run `code-review-graph update` after major refactoring or structural changes.
 - **Step 1B: [Apple Docs / Swift Specs]** - For platform APIs (SwiftUI, AVFoundation, etc.), use `search_web` or `read_url_content` for official docs. Avoid broad scraping; focus on specific snippets.
 - **Step 1.5: [File Skeleton]** - Verify file maps using Serena's `get_symbols_overview`.
     - **Fallback:** If Serena MCP is restricted, use CLI-based symbol extraction via `serena project index` results or read `.serena/project.yml` for configuration. (Read-only analysis tools are permitted for efficient navigation).
@@ -73,7 +74,7 @@ Agents MUST minimize token usage without skipping mandatory policy checks. Unnec
 - **Repomix:** Use `--include` to narrow the analysis scope and prevent token waste (e.g., `npx repomix --include "DizzyAsset/Domain/*"`).
 - **CLI Failure Fallback:** If CLI tools fail due to environment issues, fallback to traditional `grep` and `find`. **CRITICAL:** Limit the search range extremely narrowly to minimize token waste. // Minimum safety measure to prevent analysis interruption when tools fail.
 
-**For Non-trivial+ work, use `code-review-graph (CLI)` before broad manual exploration. If broader context is needed, state why before loading it. Example: `npx caveman-shrink code-review-graph detect-changes --base HEAD~1`**
+**For Non-trivial+ work, use `code-review-graph` (MCP Proxy) before broad manual exploration. If the MCP server is unavailable, fallback to CLI: `npx caveman-shrink code-review-graph detect-changes --base HEAD~1`**
 
 ---
 
@@ -122,8 +123,8 @@ When a trigger matches, read the policy file before planning or execution. Unrea
 | FTS5, Search ranking, duplicate detection | `docs/guidelines/search-architecture.md` |
 | Media metadata, waveforms, AVFoundation | `docs/guidelines/preview-engine.md` |
 | Project config, XcodeGen, build settings | `docs/guidelines/xcodegen-project.md` |
-| Large analysis, impact scope, structural graph | `docs/guidelines/code-review-graph-guide.md` |
-| LLM search, Token economy, Semble operation | `docs/guidelines/semble-operation-guide.md` |
+| `code-review-graph`, knowledge graph, structural analysis, impact radius, blast radius | `docs/agent-policy/code-review-graph-guide.md` |
+| `semble`, code search, semantic search, vector index, zombie processes | `docs/agent-policy/semble-operation-guide.md` and `docs/agent-policy/semble-troubleshooting.md` |
 | AI analysis, tag generation, providers | `docs/guidelines/ai-analysis-provider.md` |
 | Duplicate detection, hashing, hashing logic | `docs/guidelines/duplicate-detection.md` |
 | Workspace lifecycle, background tasks | `docs/guidelines/workspace-lifecycle.md` |
@@ -164,7 +165,7 @@ When a trigger matches, read the policy file before planning or execution. Unrea
 
 ### `serena`
 - **Use:** Precision-first semantic analysis, LSP-based symbol navigation, architectural memory.
-- **Guideline:** `docs/guidelines/serena-integration.md`
+- **Guideline:** `docs/agent-policy/serena-integration.md`
 
 ---
 
@@ -242,7 +243,17 @@ Non-obvious fixes or platform behaviors MUST be documented in `docs/knowledge/YY
 
 ---
 
-## 11. Incident Boundary (Emergency Lock)
+## 11. Code Review Graph Operation Rules
+
+1.  **Unified MCP Mode**: All agents MUST use the `code-review-graph` MCP server wrapped via `caveman-shrink` for all structural analysis tasks.
+2.  **Tool Whitelist (The Power Six)**: Focus only on the primary tools (`query_graph_tool`, `semantic_search_nodes_tool`, `detect_changes_tool`, `get_review_context_tool`, `get_impact_radius_tool`, `get_architecture_overview_tool`) to stay within 50-tool execution limits.
+3.  **Reporting Standard**: Do not dump raw output from these tools. Report a concise summary of key dependency chains or structural insights within **30 lines** (refer to Section 2B Token Shield).
+4.  **CLI Fallback Protocol**: If the MCP server fails, fallback to `npx caveman-shrink code-review-graph <subcommand>`. Refer to `docs/agent-policy/code-review-graph-guide.md` for mapping.
+5.  **Impact Gating**: Non-trivial changes MUST be preceded by a `detect_changes_tool` or `get_impact_radius_tool` run to verify the blast radius.
+
+---
+
+## 12. Incident Boundary (Emergency Lock)
 
 If a protocol violation occurs or is suspected:
 1. STOP all implementation immediately.
@@ -251,7 +262,7 @@ If a protocol violation occurs or is suspected:
 
 ---
 
-## 12. Final Authority
+## 13. Final Authority
 
 Agents provide evidence; instruction owner makes final decisions. Do not declare final acceptance.
 
