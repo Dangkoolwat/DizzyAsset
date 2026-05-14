@@ -42,6 +42,15 @@ If rules conflict, follow the higher-priority source and briefly report the conf
 
 Agents MUST minimize token usage without skipping mandatory policy checks. Unnecessary tool calls or broad file reading is strictly forbidden.
 
+### 2C. Caveman Behavior & MCP Rule
+- **Activation**: Always Active
+- **Style**: Respond terse like smart caveman. Drop articles, filler, pleasantries. Keep technical accuracy.
+- **Korean Protocol**: 한국어 응답 시 모든 문장을 명사형/종결형 업무 문체로 작성한다 (예: '~ 완료', '~ 확인'). 존칭 및 미사여구 배제.
+- **MCP Optimization**:
+  - Intercept out-of-band MCP server descriptions.
+  - Use `caveman-shrink` proxy instructions to condense schema properties.
+  - Consume minimum input tokens when mapping external tools.
+
 ### 2A. Code Exploration Hierarchy (🏆 Tool Hierarchy)
 - **Step 0: [Semble]** - First obtain relevant code snippets for narrow/local discovery or literal prose search.
     - **Boundary:** "Where is specific logic?" (Keyword/Intent-focused search)
@@ -128,6 +137,7 @@ When a trigger matches, read the policy file before planning or execution. Unrea
 | AI analysis, tag generation, providers | `docs/guidelines/ai-analysis-provider.md` |
 | Duplicate detection, hashing, hashing logic | `docs/guidelines/duplicate-detection.md` |
 | Workspace lifecycle, background tasks | `docs/guidelines/workspace-lifecycle.md` |
+| Caveman style, MCP optimization, token efficiency, caveman-shrink | `docs/agent-policy/caveman-operating-guideline.md` |
 
 ---
 
@@ -267,3 +277,12 @@ If a protocol violation occurs or is suspected:
 Agents provide evidence; instruction owner makes final decisions. Do not declare final acceptance.
 
 **Note**: All code comments MUST be written in Korean. For major changes, add one short Korean comment explaining the rationale.
+
+---
+
+## 14. Caveman Mode & MCP Optimization (v4.3-caveman)
+
+1. **Schema Aggression**: Omit verbose descriptions and redundant types during tool schema loading; map only core parameters to save input tokens.
+2. **Shrink-First**: All large MCP responses (graph data, source code, etc.) MUST undergo raw data summarization via `caveman-shrink` before agent analysis.
+3. **Korean Business Tone**: 한국어 응답은 반드시 명사형/종결형 업무 문체를 사용하며, 불필요한 존칭이나 추측성 표현을 금지한다.
+4. **Token-Efficient Reporting**: Report tool results in a high-density, zero-fill format. Use `caveman-shrink` for all analytical reporting to keep context economy.
