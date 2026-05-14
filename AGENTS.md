@@ -80,7 +80,7 @@ Agents MUST minimize token usage without skipping mandatory policy checks. Unnec
 > **"Formulate a hypothesis first (Semble for intent, Graph for blast radius), verify the location (Skeleton/LSP), and read only when certain (Read). Critical modifications must be re-validated with Graph."**
 
 ### 🛠️ Advanced Token Utilities & Fallbacks
-- **Repomix:** Use `--include` to narrow the analysis scope and prevent token waste (e.g., `npx repomix --include "DizzyAsset/Domain/*"`).
+- **Repomix:** Use `--include` to narrow the analysis scope and prevent token waste (e.g., `npx repomix --include "DizzyAsset/Domain/**"`).
 - **CLI Failure Fallback:** If CLI tools fail due to environment issues, fallback to traditional `grep` and `find`. **CRITICAL:** Limit the search range extremely narrowly to minimize token waste. // Minimum safety measure to prevent analysis interruption when tools fail.
 
 **For Non-trivial+ work, use `code-review-graph` (MCP Proxy) before broad manual exploration. If the MCP server is unavailable, fallback to CLI: `npx caveman-shrink code-review-graph detect-changes --base HEAD~1`**
@@ -94,7 +94,7 @@ Agents MUST adhere to the following rules when submitting CLI results or analysi
 | Tool (CLI) | Purpose | Command Example | Token Defense Rule (MANDATORY) |
 |---|---|---|---|
 | **code-review-graph** | Impact Analysis | `npx caveman-shrink code-review-graph detect-changes` | Do not dump raw results; report a summary of key dependency chains within **30 lines**. |
-| **Repomix** | Large-scale packing | `npx repomix --include "src/**/*.java"` | Avoid full project packing; specify **only required folders**. |
+| **Repomix** | Large-scale packing | `npx repomix --include "DizzyAsset/Domain/**"` | Avoid full project packing; specify **only required folders**. |
 
 ---
 
@@ -286,3 +286,12 @@ Agents provide evidence; instruction owner makes final decisions. Do not declare
 2. **Shrink-First**: All large MCP responses (graph data, source code, etc.) MUST undergo raw data summarization via `caveman-shrink` before agent analysis.
 3. **Korean Business Tone**: 한국어 응답은 반드시 명사형/종결형 업무 문체를 사용하며, 불필요한 존칭이나 추측성 표현을 금지한다.
 4. **Token-Efficient Reporting**: Report tool results in a high-density, zero-fill format. Use `caveman-shrink` for all analytical reporting to keep context economy.
+
+---
+
+## 15. Repomix Operation Rules
+
+1. **Scope Targeting**: ALWAYS use the `--include` flag to specify only the relevant modules or directories (e.g., `npx repomix --include "DizzyAsset/Domain/**"`).
+2. **Ignore Patterns**: Use `--ignore` or ensure `.repomixignore` excludes non-source files (e.g., `.xcodeproj`, `.xcassets`, `DerivedData`, `.git`).
+3. **Token Efficiency**: Combine with `caveman-shrink` if the output is still too large.
+4. **Usage Gating**: Only use Repomix when the prioritized hierarchy (Semble -> CRG -> Serena) is insufficient for comprehensive context.
