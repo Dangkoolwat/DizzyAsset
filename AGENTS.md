@@ -1,6 +1,6 @@
 # AGENTS.md
 
-**Document version:** v2.2
+**Document version:** v2.3
 **Project:** DizzyAsset  
 **Role:** Lean router for agent behavior
 **Status:** Living document  
@@ -51,8 +51,8 @@ Do not read by default:
 
 Read `docs/agent-policy/3-stage-pipeline.md` before any non-trivial task.
 
-- Stage 1: if the target is unclear, start with `rg --files` / `rg`; if it is already known, go straight to Serena.
-- Stage 2: use `code-review-graph` when blast radius is large or unclear, then Serena for exact symbol checks.
+- Stage 1: if the task is ambiguous, default to `semble_rs plan`; if the target is still unclear, use `rg --files` / `rg`; if it is already known, start with `semble_rs search --outline` or `--compact`, then Serena after the search space is narrow.
+- Stage 2: use `code-review-graph` when blast radius is large or unclear, then use `deps` before `impact` for Swift files; treat shallow `impact` output as inconclusive and confirm exact callers with Serena or CRG.
 - Stage 3: use surgical reads and LSP navigation for verification.
 
 Rules:
