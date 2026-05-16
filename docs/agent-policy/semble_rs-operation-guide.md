@@ -5,13 +5,15 @@
 ## 1. Purpose
 
 - Use `semble_rs search` for narrow code search and candidate discovery.
-- Use `search` first.
+- Use `tree --symbols` for a fast project map.
+- Use `deps` to confirm the direct imports and symbols of a Swift file.
 - Confirm exact source lines with regular reads after search.
 
 ## 2. Swift Rule
 
-- Swift uses text search only.
-- Do not rely on AST commands for Swift.
+- Swift supports `tree --symbols`, `deps`, and `search --outline`.
+- Use `impact` only as a quick reverse-dependency probe.
+- Treat empty `impact` output as inconclusive.
 - If a broader structural view is needed, switch to CRG or Serena.
 
 ## 3. Usage
@@ -19,6 +21,7 @@
 - Search by symbol, keyword, or intent.
 - Narrow scope early.
 - Avoid broad directory scans when the target is known.
+- Prefer `search --outline` before `search --compact` when the candidate set is still large.
 
 ## 4. Tool Order
 

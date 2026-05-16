@@ -56,8 +56,8 @@ Read `docs/agent-policy/3-stage-pipeline.md` before any non-trivial task.
 - Stage 3: use surgical reads and LSP navigation for verification.
 
 Rules:
-- Use `semble_rs search` only when semantic narrowing still helps.
-- Swift discovery never uses AST commands.
+- For Swift files, use `semble_rs tree --symbols`, `deps`, or `search --outline` when semantic narrowing or structure mapping still helps.
+- Use `impact` only as a sparse reverse-dependency probe; empty output is not proof of no blast radius.
 - Do not read files over 500 lines unless strictly necessary.
 - Stop when the objective is met.
 

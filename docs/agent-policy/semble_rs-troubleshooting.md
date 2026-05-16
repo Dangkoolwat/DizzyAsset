@@ -23,4 +23,6 @@ Common `semble_rs` issues and the usual fix path.
 ## 4. Recovery Rule
 
 - For Swift work, keep discovery on `semble_rs search`.
+- Use `tree --symbols` or `deps` when you need the Swift file shape.
+- Use `impact` only as a quick probe; if it is empty, treat the result as inconclusive.
 - Use CRG or Serena for analysis when search alone is not enough.

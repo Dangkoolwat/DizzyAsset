@@ -6,9 +6,9 @@ This pipeline is mandatory for non-trivial Swift work.
 
 - If the target is unclear, start with `rg --files` / `rg`.
 - If the target is already known at symbol level, go straight to Serena.
-- Use `semble_rs search` only when semantic narrowing still helps.
+- For Swift files, use `semble_rs tree --symbols`, `deps`, or `search --outline` when semantic narrowing or structure mapping still helps.
 - Pass `repo="."` or a git URL when indexing on demand.
-- Do not use `semble_rs deps`, `semble_rs impact`, or any AST-based command.
+- Use `impact` only as a sparse reverse-dependency probe; empty output is not proof of no blast radius.
 
 ## Stage 2: Impact Analysis
 
@@ -37,7 +37,7 @@ This pipeline is mandatory for non-trivial Swift work.
 
 ## Workflow Rule
 
-If the target is unclear, discover with `rg --files` / `rg` first. If it is already known, use Serena directly. Then use CRG only when blast radius is large or unclear, and verify with LSP reads.
+If the target is unclear, discover with `rg --files` / `rg` first. If it is already known, use Serena directly. For Swift files, use `tree --symbols`, `deps`, or `search --outline` before deep reads. Then use CRG only when blast radius is large or unclear, and verify with LSP reads.
 
 ## Fallback Rule
 
