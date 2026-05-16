@@ -111,3 +111,5 @@ Version bump only.
 ## v1.3 and earlier
 
 Initial versions. Full inline technical guidelines covering Swift style, SwiftUI architecture, concurrency, SQLite, sandbox, FCP integration, and more. All subsequently extracted to `docs/guidelines/`.
+
+- 2026-05-16 | agents-search-order-compression | shortened the search-order wording in AGENTS.md and 3-stage-pipeline while keeping the same rg-unclear, Serena-known, CRG-large-or-unclear meaning

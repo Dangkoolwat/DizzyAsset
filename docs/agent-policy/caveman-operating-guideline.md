@@ -1,46 +1,31 @@
-# AI Agent Operating Guideline (v4.3-caveman)
+# AI Agent Operating Guideline
 
-This document defines the behavioral and technical standards for agents operating in this repository, focusing on token efficiency and professional communication.
+This guide defines the caveman style and token-efficiency rules.
 
-## 1. Persona & Communication (via Skill)
-- **Base Style:** Follow `./.agents/skills/caveman/SKILL.md` strictly.
-- **Tone:** Professional, technical, no filler (Lite mode).
-- **Tagging:** Maintain ✅ Facts, ⚠️ Uncertain, 💡 Deduction. Do not compress tags.
-- **Korean Protocol**: Use concise business noun-ended tone (e.g., '~ 완료', '~ 확인', '~ 수정'). Avoid honorifics and descriptive fillers.
+## 1. Persona
 
-## 2. Infrastructure & Tools (via MCP)
-- **MCP Optimization**:
-  - **Schema Aggression**: Omit verbose descriptions and redundant types during tool schema loading; map only core parameters.
-  - **Shrink-First**: All MCP responses must undergo raw data summarization via `caveman-shrink` before agent analysis.
-- **Priority**: Reduce input tokens by 50% using MCP-based tool descriptions.
+- Base style: follow the Caveman skill.
+- Tone: professional, technical, no filler.
+- Korean replies: use concise business noun-ended form.
 
-### 2.1 Shrink Wrapper Safety
-`caveman-shrink` reduces transport cost, not review responsibility.
+## 2. MCP Efficiency
 
-Compressed output may be used for navigation, handoff, and tool-call overhead reduction, but MUST NOT remove failed command names, first meaningful errors, changed file paths, policy triggers, scope deviations, protected-area touches, skipped verification, High-Risk warnings, or release blockers.
+- Shrink MCP schemas and responses with `caveman-shrink`.
+- Keep only core parameters when mapping tools.
+- Treat shrink output as transport reduction, not proof.
 
-For High-Risk work, incidents, failed verification, release decisions, CI/CD decisions, or protected-area changes, compressed summaries are not final evidence. Preserve or request exact output when full context is required.
+## 3. Safety
 
-## 3. Protocol Content vs Lite Mode
-Caveman Lite controls wording style, not required protocol content.
+- Do not remove failed command names, first errors, changed paths, policy triggers, scope drift, protected-area touches, skipped verification, high-risk warnings, or release blockers from compressed summaries.
+- For high-risk work, incidents, failed verification, release decisions, CI/CD decisions, or protected-area changes, request exact output when full context is needed.
 
-DO NOT omit mandatory handshake, policy trigger mapping, validation, incident, work log, or handoff fields for brevity. Keep required content short, but complete.
+## 4. Content Rule
 
-### 3.1 Communication Protocol (Full/Lite)
-- Default to Caveman Skill (Full/Lite).
-- Keep responses short, direct, and readable.
+- Caveman style changes wording, not required protocol content.
+- Keep mandatory handshake, policy mapping, validation, incident, work log, and handoff fields.
+
+## 5. Reporting
+
+- Keep replies short, direct, and readable.
 - Remove greetings, apologies, and filler unless needed for clarity.
-- Keep technical facts exact; avoid vague phrasing.
-- Use plain statements for security warnings or destructive changes.
-
----
-
-## 4. AGENTS.md Enforcement Rules (from Section 14)
-
-These rules are authoritative and enforced by `AGENTS.md`.
-
-1. **Schema Aggression**: Omit verbose descriptions and redundant types during tool schema loading; map only core parameters to save input tokens.
-2. **Shrink-First**: All large MCP responses (graph data, source code, etc.) MUST undergo raw data summarization via `caveman-shrink` before agent analysis.
-3. **Korean Business Tone**: 한국어 응답은 반드시 명사형/종결형 업무 문체를 사용하며, 불필요한 존칭이나 추측성 표현을 금지한다.
-4. **Token-Efficient Reporting**: Report tool results in a high-density, zero-fill format. Use `caveman-shrink` for all analytical reporting to keep context economy.
-
+- Keep technical facts exact.

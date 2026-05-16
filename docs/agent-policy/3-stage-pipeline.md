@@ -1,58 +1,44 @@
-# 3-Stage Exploration Pipeline (Swift-Adapted MCP-Only Workflow)
+# 3-Stage Exploration Pipeline
 
-> **⚠️ CRITICAL (Swift Limitation):** This is a Swift project. `semble_rs` AST-based dependency analysis (`deps`, `impact` subcommands) does NOT work for Swift. Only `semble_rs search` is permitted. All impact analysis MUST use CRG MCP or Serena MCP.
+This pipeline is mandatory for non-trivial Swift work.
 
----
+## Stage 1: Discovery
 
-## Stage 1: Discovery (Fast Text Search)
+- If the target is unclear, start with `rg --files` / `rg`.
+- If the target is already known at symbol level, go straight to Serena.
+- Use `semble_rs search` only when semantic narrowing still helps.
+- Pass `repo="."` or a git URL when indexing on demand.
+- Do not use `semble_rs deps`, `semble_rs impact`, or any AST-based command.
 
-- **Tool:** `semble_rs search --compact` ONLY.
-- **Purpose:** Locate candidate files, symbols, and code snippets via keyword/intent-based search.
-- **Note:** Auto-indexing is disabled for performance. Pass `repo="."` or a git URL explicitly to index on demand. Indexes are cached for the session.
-- **Prohibited:** Do NOT use `semble_rs deps`, `semble_rs impact`, or any AST-dependent subcommand.
+## Stage 2: Impact Analysis
 
----
+- Primary: `code-review-graph` when blast radius is large or unclear.
+- Secondary: Serena for exact symbol checks.
+- Use CRG for blast radius and dependency chains.
+- Use Serena for symbol overview, definitions, and references.
+- Use official Apple docs only when platform API confirmation is needed.
+- Wrap MCP access with `caveman-shrink` when available.
+- Run `code-review-graph update` after major structural changes.
 
-## Stage 2: Impact Analysis (Structural & Semantic)
+## Stage 3: Verification
 
-- **Primary Tool:** `code-review-graph` MCP (`get_impact_radius_tool`, `query_graph_tool`).
-- **Secondary Tool:** `Serena` MCP (`get_symbols_overview`, `find_symbol`, `find_referencing_symbols`).
-- **Supplementary:** For platform APIs (SwiftUI, AVFoundation, etc.), use `search_web` or `read_url_content` for official Apple docs.
-- **Connection order:** MCP Proxy (Wrapped in `caveman-shrink`) first → CLI fallback. Use whitelisted "Power Six" tools for maximum efficiency.
-- **Maintenance:** Must run `code-review-graph update` after major refactoring or structural changes.
+- Use Serena for precision navigation and reference checks.
+- Re-run CRG change analysis after edits.
+- Read only the exact lines and scopes you need.
+- Use Git history only for final confirmation.
 
----
+## Efficiency Rules
 
-## Stage 3: Verification & Review
+- Move to the next stage only if the current stage is insufficient.
+- Stop when the objective is met.
+- Do not read unrelated files or files over 500 lines in full.
+- Use diff or patch output instead of rewriting entire files.
+- Skip stages 1-2 only for trivial typo or comment-only edits.
 
-- **Primary Tool:** `Serena` (LSP) for precision symbol navigation and definition/reference verification.
-- **Validation Tool:** `code-review-graph` MCP (`detect_changes_tool`) to confirm blast radius post-modification.
-- **Surgical Read:** `Grep/Read` — deep, precision reading only within confirmed scopes. Strictly limit to specific Line Ranges.
-- **History:** `Git` — review change history for final verification.
+## Workflow Rule
 
----
+If the target is unclear, discover with `rg --files` / `rg` first. If it is already known, use Serena directly. Then use CRG only when blast radius is large or unclear, and verify with LSP reads.
 
-## Efficiency Constraints
+## Fallback Rule
 
-- **Gating Principle**: Proceed to the next Stage only if current results are insufficient. Unnecessary tool calls are forbidden. Stop immediately once the objective is met.
-- **Minimal Context**: Do not include unrelated code in the context.
-- **Selective Reading**: Do not read files over 500 lines in their entirety. Use Skeleton analysis first, then read specific function ranges.
-- **Incremental Output**: Use diff/patch formats instead of rewriting entire files.
-- **Trivial Exception**: Stages 1-2 can be skipped for typos or simple comment edits with no logic changes.
-
-**DO NOT load unrelated policy files, full project docs for a single task, roadmap/future-scope notes during implementation, unrelated feature directories, old chat history when an approved artifact exists, or broad directories "just in case".**
-
----
-
-## Workflow Principle
-
-> **"Discover with semble_rs (search only), Analyze impact with CRG/Serena (MCP), Verify with LSP and re-validate with CRG detect_changes. No exceptions."**
-
----
-
-## Advanced Token Utilities & Fallbacks
-
-- **Repomix:** Use `--include` to narrow the analysis scope and prevent token waste (e.g., `npx repomix --include "DizzyAsset/Domain/**"`).
-- **CLI Failure Fallback:** If CLI tools fail due to environment issues, fallback to traditional `grep` and `find`. **CRITICAL:** Limit the search range extremely narrowly to minimize token waste.
-
-**For Non-trivial+ work, use `code-review-graph` (MCP Proxy) before broad manual exploration. If the MCP server is unavailable, fallback to CLI: `npx caveman-shrink code-review-graph detect-changes --base HEAD~1`**
+If CRG CLI is needed, use `npx caveman-shrink code-review-graph <subcommand>`.
