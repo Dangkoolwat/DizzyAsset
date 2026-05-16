@@ -115,3 +115,4 @@ Initial versions. Full inline technical guidelines covering Swift style, SwiftUI
 - 2026-05-16 | agents-search-order-compression | shortened the search-order wording in AGENTS.md and 3-stage-pipeline while keeping the same rg-unclear, Serena-known, CRG-large-or-unclear meaning
 - 2026-05-16 | dizzyasset-semble-rs-swift-support | Updated AGENTS and semble_rs routing for Swift AST discovery, kept CRG/Serena as validation, and documented the impact caveat
 - 2026-05-16 | dizzyasset-semble-rs-default-rules | added conditional defaults for plan/search/deps/impact across AGENTS.md and semble_rs docs to keep the workflow deterministic for ambiguous tasks
+- 2026-05-16 | dizzyasset-docs-routing-cache | added a docs-analysis cache and repo-local sync script for the docs layout

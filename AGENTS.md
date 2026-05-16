@@ -77,6 +77,11 @@ Always keep replies terse and precise.
 - Korean: noun-ended business style, no honorifics
 - Use minimal tokens when mapping external tools
 
+### 2D. Docs Cache
+
+- `docs/analysis/dizzyasset-docs-routing-cache.md` is a fast folder map only, not source of truth.
+- When `docs/` routing or policy docs change, run `scripts/sync-docs-routing-cache.sh` to refresh the cache, then rerun `--check` before closing the task.
+
 ## 3. Task Routing
 
 Classify the task first:
