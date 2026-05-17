@@ -172,3 +172,4 @@ Initial versions. Full inline technical guidelines covering Swift style, SwiftUI
 - 2026-05-16 | dizzyasset-semble-rs-swift-support | Updated AGENTS and semble_rs routing for Swift AST discovery, kept CRG/Serena as validation, and documented the impact caveat
 - 2026-05-16 | dizzyasset-semble-rs-default-rules | added conditional defaults for plan/search/deps/impact across AGENTS.md and semble_rs docs to keep the workflow deterministic for ambiguous tasks
 - 2026-05-16 | dizzyasset-docs-routing-cache | added a docs-analysis cache and repo-local sync script for the docs layout
+- 2026-05-17 | dizzyasset-ast-grep-aux-search | added ast-grep as an optional syntax-aware refinement step while keeping rg and Serena as the main discovery path

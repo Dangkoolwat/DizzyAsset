@@ -7,6 +7,7 @@
 - Use `semble_rs search` for narrow code search and candidate discovery.
 - Use `tree --symbols` for a fast project map.
 - Use `deps` to confirm the direct imports and symbols of a Swift file.
+- Use `ast-grep` when the pattern is already known and syntax-aware narrowing helps.
 - Confirm exact source lines with regular reads after search.
 - When the task is ambiguous, default to `plan` before deeper search.
 

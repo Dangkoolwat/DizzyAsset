@@ -6,7 +6,7 @@ This pipeline is mandatory for non-trivial Swift work.
 
 - If the task is ambiguous, start with `semble_rs plan`.
 - If the target is still unclear after planning, use `rg --files` / `rg`.
-- If the target is already known at symbol level, start with `semble_rs search --outline` or `--compact`, then Serena after the search space is narrow.
+- If the target is already known at symbol level, start with `semble_rs search --outline` or `--compact`; use `ast-grep` when the pattern is already known and syntax-aware narrowing helps, then Serena after the search space is narrow.
 - For Swift files, use `semble_rs tree --symbols`, `deps`, or `search --outline` when semantic narrowing or structure mapping still helps.
 - Pass `repo="."` or a git URL when indexing on demand.
 - Use `impact` only as a sparse reverse-dependency probe; empty output is not proof of no blast radius.
@@ -39,7 +39,7 @@ This pipeline is mandatory for non-trivial Swift work.
 
 ## Workflow Rule
 
-If the task is ambiguous, discover with `semble_rs plan` first. If the target is still unclear, use `rg --files` / `rg`. If it is already known, start with `semble_rs search --outline` or `--compact`, then use Serena after the search space is narrow. For Swift files, use `tree --symbols`, `deps`, or `search --outline` before deep reads. Then use CRG only when blast radius is large or unclear, and verify with LSP reads.
+If the task is ambiguous, discover with `semble_rs plan` first. If the target is still unclear, use `rg --files` / `rg`. If it is already known, start with `semble_rs search --outline` or `--compact`; use `ast-grep` when the pattern is already known and syntax-aware narrowing helps, then use Serena after the search space is narrow. For Swift files, use `tree --symbols`, `deps`, or `search --outline` before deep reads. Then use CRG only when blast radius is large or unclear, and verify with LSP reads.
 
 ## Fallback Rule
 

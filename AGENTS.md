@@ -52,7 +52,7 @@ Do not read by default:
 Read `docs/agent-policy/3-stage-pipeline.md` before any non-trivial task.
 Stage 1 is discovery, Stage 2 is impact analysis, and Stage 3 is verification only after the scope is narrow.
 
-- Stage 1: if the task is ambiguous, default to `semble_rs plan`; if the target is still unclear, use `rg --files` / `rg`; if it is already known, start with `semble_rs search --outline` or `--compact`, then Serena after the search space is narrow.
+- Stage 1: if the task is ambiguous, default to `semble_rs plan`; if the target is still unclear, use `rg --files` / `rg`; if it is already known, start with `semble_rs search --outline` or `--compact`; use `ast-grep` when the pattern is already known and syntax-aware narrowing helps, then Serena after the search space is narrow.
 - Stage 2: use `code-review-graph` when blast radius is large or unclear, then use `deps` before `impact` for Swift files; treat shallow `impact` output as inconclusive and confirm exact callers with Serena or CRG.
 - Stage 3: use surgical reads and LSP navigation for verification.
 
