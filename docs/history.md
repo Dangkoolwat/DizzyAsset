@@ -27,6 +27,16 @@ This document tracks the evolution of `AGENTS.md` and core policy documents.
 
 ---
 
+## v2.2 — 2026-05-17
+
+**Scope:** Clarify stage roles for other agents.
+
+### Changes
+1. **Section 2A clarified**: Stage 1/2/3 were labeled as discovery, impact analysis, and verification so the router reads the same way as the pipeline.
+2. **Version**: v2.1 → v2.2. Last updated: 2026-05-17.
+
+---
+
 ## v2.0 — 2026-05-13
 
 **Scope:** Major restructuring from lean router (v1.x) to mandatory execution contract.
