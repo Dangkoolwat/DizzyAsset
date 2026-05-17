@@ -222,7 +222,7 @@ Knowledge notes:
 - keep them short
 - do not include secrets
 - do not log every small mistake
-If a rule causes recurring friction or confusion, record it in `docs/history.md` and the task log so the next agent has a clear follow-up trail.
+If a rule causes recurring friction or confusion, record it in `docs/history.md` and the task log so the next agent has a clear follow-up trail. This is a reporting trail, not a full feedback loop.
 
 ## 10. Serena Rules
 

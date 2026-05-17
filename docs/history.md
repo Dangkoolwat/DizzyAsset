@@ -5,6 +5,16 @@ This document tracks the evolution of `AGENTS.md` and core policy documents.
 
 ---
 
+## v2.4 — 2026-05-17
+
+**Scope:** Clarify the feedback trail language in the handoff section.
+
+### Changes
+1. **Section 9 clarified**: recurring friction now maps to a reporting trail in `docs/history.md` and the task log, not a full feedback loop claim.
+2. **Version**: v2.3 → v2.4. Last updated: 2026-05-17.
+
+---
+
 ## v2.3 — 2026-05-17
 
 **Scope:** Reduce redundant router text while preserving mandatory checks.
