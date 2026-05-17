@@ -1,6 +1,6 @@
 # AGENTS.md
 
-**Document version:** v2.5
+**Document version:** v2.6
 **Project:** DizzyAsset  
 **Role:** Lean router for agent behavior
 **Status:** Living document  
@@ -194,6 +194,7 @@ Do not change without explicit approval:
 ### 8A. Core Policy Document Protection
 
 This is a protection path, not a routine edit checklist.
+Typo-only or comment-only edits may skip steps 1-2 when the change is clearly local and low risk.
 
 Before editing `AGENTS.md` or any `docs/agent-policy/` file:
 1. Read `docs/history.md` and the relevant git log
@@ -216,6 +217,7 @@ Include:
 - skipped checks and why
 - known risks
 - next step
+Trivial tasks may use task ID, risk level, and summary only.
 
 UI changes must store screenshots or recordings in `artifacts/YYYY-MM-DD/<task-id>/`.
 
@@ -250,12 +252,19 @@ These rules are mandatory for all models.
 
 ### Rule 1: Stop and Think
 
-Before any code modification tool, output a `[Reasoning]` block that states:
+Before any code modification tool, output a `[Reasoning]` block in this format:
+```text
+[Reasoning]
+what: ...
+why: ...
+preserved: ...
+risk: ...
+```
+The block must state:
 - what changes
 - why
 - how existing logic is preserved
 - what could break if wrong
-A valid block must cover all four bullets; shorter blocks are incomplete.
 
 ### Rule 2: Compile-Gated Verification
 

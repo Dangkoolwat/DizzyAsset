@@ -5,6 +5,18 @@ This document tracks the evolution of `AGENTS.md` and core policy documents.
 
 ---
 
+## v2.6 — 2026-05-17
+
+**Scope:** Make the remaining guardrail tradeoffs explicit and narrow the fast-path exceptions.
+
+### Changes
+1. **Section 8A clarified**: typo-only or comment-only edits may skip the first two protection steps when the change is clearly local and low risk.
+2. **Section 9 clarified**: trivial tasks may use task ID, risk level, and summary only, while non-trivial and high-risk tasks keep the full handoff list.
+3. **Section 12A clarified**: the Reasoning block now has a fixed template with `what`, `why`, `preserved`, and `risk`.
+4. **Version**: v2.5 → v2.6. Last updated: 2026-05-17.
+
+---
+
 ## v2.5 — 2026-05-17
 
 **Scope:** Align versioning and tighten the remaining guardrail wording.
