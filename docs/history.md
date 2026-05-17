@@ -5,6 +5,18 @@ This document tracks the evolution of `AGENTS.md` and core policy documents.
 
 ---
 
+## v2.5 — 2026-05-17
+
+**Scope:** Align versioning and tighten the remaining guardrail wording.
+
+### Changes
+1. **Section 8A clarified**: core policy protection is explicitly marked as a protection path, not a routine checklist.
+2. **Section 9/12A clarified**: handoff items are framed as concise required fields, and the Reasoning block now has an explicit completeness check.
+3. **Section 12A clarified**: stop-condition recovery now states that resumption needs explicit approval or a clear scope change.
+4. **Version**: v2.4 → v2.5. Last updated: 2026-05-17.
+
+---
+
 ## v2.4 — 2026-05-17
 
 **Scope:** Clarify the feedback trail language in the handoff section.

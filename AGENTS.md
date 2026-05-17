@@ -1,6 +1,6 @@
 # AGENTS.md
 
-**Document version:** v2.3
+**Document version:** v2.5
 **Project:** DizzyAsset  
 **Role:** Lean router for agent behavior
 **Status:** Living document  
@@ -193,6 +193,8 @@ Do not change without explicit approval:
 
 ### 8A. Core Policy Document Protection
 
+This is a protection path, not a routine edit checklist.
+
 Before editing `AGENTS.md` or any `docs/agent-policy/` file:
 1. Read `docs/history.md` and the relevant git log
 2. Explain what will change, why, and what must be preserved
@@ -223,6 +225,7 @@ Knowledge notes:
 - do not include secrets
 - do not log every small mistake
 If a rule causes recurring friction or confusion, record it in `docs/history.md` and the task log so the next agent has a clear follow-up trail. This is a reporting trail, not a full feedback loop.
+Keep each handoff item short; the list is required for completeness, not as a prose target.
 
 ## 10. Serena Rules
 
@@ -252,6 +255,7 @@ Before any code modification tool, output a `[Reasoning]` block that states:
 - why
 - how existing logic is preserved
 - what could break if wrong
+A valid block must cover all four bullets; shorter blocks are incomplete.
 
 ### Rule 2: Compile-Gated Verification
 
@@ -270,6 +274,7 @@ If a code change causes a build failure:
 3. Report what failed and what was restored
 
 Never leave the repo in a broken state.
+If blocked after a stop condition, resume only after explicit approval or a clear scope change.
 
 ## 13. Final Authority
 
