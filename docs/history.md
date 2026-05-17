@@ -5,6 +5,28 @@ This document tracks the evolution of `AGENTS.md` and core policy documents.
 
 ---
 
+## v2.3 — 2026-05-17
+
+**Scope:** Reduce redundant router text while preserving mandatory checks.
+
+### Changes
+1. **Section 3 clarified**: task routing now states that Section 4 adds mandatory policy reads and that matching policy files must all be read.
+2. **Section 4 expanded**: `review-and-refactor` and `superpower` were added to the trigger table so the skill table and trigger table no longer drift apart.
+3. **Sections 10/11/12A/14/15 tightened**: Serena and CRG sections were shortened, stop conditions now point to the incident boundary, build verification points back to Section 7, and Caveman/Repomix duplicates were removed.
+4. **Version**: v2.2 → v2.3. Last updated: 2026-05-17.
+
+---
+
+## v2.2 — 2026-05-17
+
+**Scope:** Clarify stage roles for other agents.
+
+### Changes
+1. **Section 2A clarified**: Stage 1/2/3 were labeled as discovery, impact analysis, and verification so the router reads the same way as the pipeline.
+2. **Version**: v2.1 → v2.2. Last updated: 2026-05-17.
+
+---
+
 ## v2.1 — 2026-05-14
 
 **Scope:** Zero Trust Architecture upgrade.
@@ -24,16 +46,6 @@ This document tracks the evolution of `AGENTS.md` and core policy documents.
 6. **Lifecycle Routing & Stop Conditions (Section 3)**: Restored from git history.
 7. **Skill Policy (Section 5)**: `review-and-refactor` and `caveman` skills restored from git history.
 8. **Version**: v2.0 → v2.1. Last updated: 2026-05-14.
-
----
-
-## v2.2 — 2026-05-17
-
-**Scope:** Clarify stage roles for other agents.
-
-### Changes
-1. **Section 2A clarified**: Stage 1/2/3 were labeled as discovery, impact analysis, and verification so the router reads the same way as the pipeline.
-2. **Version**: v2.1 → v2.2. Last updated: 2026-05-17.
 
 ---
 

@@ -4,7 +4,7 @@
 **Project:** DizzyAsset  
 **Role:** Lean router for agent behavior
 **Status:** Living document  
-**Last updated:** 2026-05-16
+**Last updated:** 2026-05-17
 
 ## 0. Purpose
 
@@ -89,6 +89,7 @@ Classify the task first:
 - Planning / PRD / design: read only the relevant product-doc sections
 - Implementation: read this file, the task, and `docs/workflows/implementation-task.md`
 - Verification: read the diff and `docs/workflows/verification-review.md`
+Task class selects the lane; Section 4 adds any mandatory policy reads for that lane. Non-trivial and high-risk work can trigger multiple reads, and every matching policy must be read before editing.
 
 Risk levels:
 - Trivial: local UI/style, no behavior change
@@ -101,6 +102,7 @@ Stop immediately if:
 - a protected area needs approval
 - sandbox or external storage behavior is unclear
 - an FCP workaround would require hidden media copying
+If any stop condition fires, follow Section 12 Incident Boundary and wait for explicit recovery approval.
 
 Handshake for non-trivial or high-risk work:
 1. State the risk level and lifecycle stage
@@ -128,6 +130,8 @@ If a trigger matches, read the linked policy before planning or execution.
 | `code-review-graph`, structural analysis, blast radius | `docs/agent-policy/code-review-graph-guide.md` |
 | `semble_rs`, semantic search, vector index, zombie processes | `docs/agent-policy/semble_rs-operation-guide.md` and `docs/agent-policy/semble_rs-troubleshooting.md` |
 | Serena MCP, LSP navigation, symbol search, architecture memory | `docs/agent-policy/serena-integration.md` |
+| `review-and-refactor`, local refactor, readability cleanup | `.agents/skills/review-and-refactor/SKILL.md` |
+| `superpower`, non-trivial planning and execution | `.agents/skills/superpower/SKILL.md` |
 | AI analysis, tag generation, providers | `docs/guidelines/ai-analysis-provider.md` |
 | Duplicate detection, hashing | `docs/guidelines/duplicate-detection.md` |
 | Workspace lifecycle, background tasks | `docs/guidelines/workspace-lifecycle.md` |
@@ -218,22 +222,17 @@ Knowledge notes:
 - keep them short
 - do not include secrets
 - do not log every small mistake
+If a rule causes recurring friction or confusion, record it in `docs/history.md` and the task log so the next agent has a clear follow-up trail.
 
 ## 10. Serena Rules
 
-Read `docs/agent-policy/serena-integration.md`.
-
-Use Serena for precision-first navigation and memory-driven development.
-
-Allowed MCP actions are read-only tools plus `replace_symbol_body` and `rename_symbol`.
+Read `docs/agent-policy/serena-integration.md` for symbol-level navigation and memory rules.
+Use Serena for precision-first navigation.
 
 ## 11. Code Review Graph Rules
 
-Read `docs/agent-policy/code-review-graph-guide.md`.
-
-Use unified MCP mode via `caveman-shrink`.
-
-Keep output summaries under 30 lines.
+Read `docs/agent-policy/code-review-graph-guide.md` for blast-radius analysis.
+Use unified MCP mode via `caveman-shrink` and keep summaries under 30 lines.
 
 ## 12. Incident Boundary
 
@@ -261,7 +260,7 @@ If the task changes Swift source:
 - confirm `Exit code 0` or `** BUILD SUCCEEDED **`
 - include the evidence in the handoff
 
-Doc-only edits in `.md`, `.yml`, or policy files are exempt, but note that explicitly.
+Doc-only edits in `.md`, `.yml`, or policy files are exempt, but note that explicitly. For build checks, follow Section 7's command list and evidence rules.
 
 ### Rule 3: Atomic Rollback
 
@@ -278,17 +277,3 @@ Agents provide evidence. The user makes the final decision.
 
 All code comments must be in Korean.
 For major changes, add one short Korean comment that explains the reason.
-
-## 14. Caveman Mode
-
-Read `docs/agent-policy/caveman-operating-guideline.md`.
-
-Keep output terse and efficient.
-
-## 15. Repomix
-
-Read `docs/agent-policy/repomix-operation-guide.md`.
-
-Always scope `repomix` with `--include`.
-
-Never pack the whole repo.
