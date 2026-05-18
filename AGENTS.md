@@ -1,10 +1,10 @@
 # AGENTS.md
 
-**Document version:** v2.6
+**Document version:** v3.0
 **Project:** DizzyAsset  
 **Role:** Lean router for agent behavior
 **Status:** Living document  
-**Last updated:** 2026-05-17
+**Last updated:** 2026-05-18
 
 ## 0. Purpose
 
@@ -71,6 +71,8 @@ When reporting CLI or analysis results:
 | `code-review-graph` | impact analysis | summarize key dependency chains in 30 lines or less |
 | `repomix` | large-scale packing | scope with `--include`; never pack the whole repo |
 
+For `code-review-graph`, use `caveman-shrink` for compact summaries; Section 11 keeps the full rule.
+
 ### 2C. Caveman Rule
 
 Always keep replies terse and precise.
@@ -133,6 +135,11 @@ If a trigger matches, read the linked policy before planning or execution.
 | `review-and-refactor`, local refactor, readability cleanup | `.agents/skills/review-and-refactor/SKILL.md` |
 | `superpower`, non-trivial planning and execution | `.agents/skills/superpower/SKILL.md` |
 | AI analysis, tag generation, providers | `docs/guidelines/ai-analysis-provider.md` |
+| Gemini Flash-class model execution, fast fixes, omission blocking | `docs/agent-policy/gemini-coding-prompt-guide.md` |
+| Gemini Pro-class model execution, architecture checks, edge cases | `docs/agent-policy/gemini-pro-coding-prompt-guide.md` |
+| GPT 5.4 Mini execution, low-cost local fixes | `docs/agent-policy/gpt-5-4-mini-coding-prompt-guide.md` |
+| GPT 5.x Codex execution, structural changes | `docs/agent-policy/gpt-5-x-codex-coding-prompt-guide.md` |
+| Generic or infrequent model execution, fallback prompts | `docs/agent-policy/generic-coding-prompt-guide.md` |
 | Duplicate detection, hashing | `docs/guidelines/duplicate-detection.md` |
 | Workspace lifecycle, background tasks | `docs/guidelines/workspace-lifecycle.md` |
 | Caveman style, token efficiency, `caveman-shrink` | `docs/agent-policy/caveman-operating-guideline.md` |
@@ -154,6 +161,7 @@ Load only the skill that matches the task.
 | `serena` | LSP navigation, architecture memory |
 | `review-and-refactor` | local refactor, readability |
 | `caveman` | terse output, token efficiency |
+| `find-skills` | discover and install agent skills |
 
 ## 6. Project Structure
 
@@ -173,10 +181,13 @@ XcodeGen rule:
 Commands:
 - `xcodegen generate`
 - `xcodebuild -project DizzyAsset.xcodeproj -scheme DizzyAsset -configuration Debug build`
+- `xcodebuild -project DizzyAsset.xcodeproj -scheme DizzyAsset -configuration Debug test`
 
 Rules:
 - Report only commands you actually ran
 - Never claim build or test success unless the command passed
+- If test targets exist and the task touches test-covered logic, run the matching test command before closing
+- When test coverage matters, run tests with coverage enabled and report the summary from the result bundle or `xccov`
 
 ## 8. Protected Areas
 
@@ -190,6 +201,7 @@ Do not change without explicit approval:
 - keychain and secrets
 - `AGENTS.md`
 - `docs/agent-policy/*`
+- `project.yml`
 
 ### 8A. Core Policy Document Protection
 
@@ -201,7 +213,8 @@ Before editing `AGENTS.md` or any `docs/agent-policy/` file:
 2. Explain what will change, why, and what must be preserved
 3. Do not delete or reorganize context without explicit approval
 4. Keep the wording short, clear, and unambiguous
-5. After the edit, report every addition, modification, and deletion with line detail
+5. When rewriting policy text, use concise English, preserve context, and keep conditions explicit for other agents
+6. After the edit, report every addition, modification, and deletion with line detail
 
 ## 9. Handoff and Knowledge
 
@@ -213,6 +226,7 @@ Include:
 - files changed
 - summary
 - verification run and result
+- diff reference or commit hash
 - visual evidence if UI changed
 - skipped checks and why
 - known risks
@@ -246,7 +260,7 @@ If a protocol violation occurs or is suspected:
 2. Report the violated rule, target, current state, and recovery plan
 3. Do not create or modify files without explicit approval
 
-## 12A. High-Risk Guardrails
+## 14. High-Risk Guardrails
 
 These rules are mandatory for all models.
 
@@ -289,5 +303,7 @@ If blocked after a stop condition, resume only after explicit approval or a clea
 
 Agents provide evidence. The user makes the final decision.
 
-All code comments must be in Korean.
+All inline code comments must be in Korean.
+Test comments and TODO/FIXME comments must also be in Korean.
+Documentation comments (`///`) for public or cross-module APIs may be English when that is clearer.
 For major changes, add one short Korean comment that explains the reason.

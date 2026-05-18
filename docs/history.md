@@ -5,6 +5,31 @@ This document tracks the evolution of `AGENTS.md` and core policy documents.
 
 ---
 
+## v3.0 — 2026-05-18
+
+**Scope:** Normalize guardrail numbering and improve handoff traceability.
+
+### Changes
+1. **Section 9 expanded**: Handoff now includes a `diff reference or commit hash` field.
+2. **Section 14 renamed**: High-Risk Guardrails moved from `12A` to `14` for a cleaner section ladder.
+3. **Version**: v2.9 → v3.0. Last updated: 2026-05-18.
+
+---
+
+## v2.9 — 2026-05-18
+
+**Scope:** Close the remaining AGENTS policy gaps from review.
+
+### Changes
+1. **Section 2B clarified**: added a cross-reference so `caveman-shrink` stays anchored to Section 11 instead of drifting into a second rule source.
+2. **Section 5 expanded**: `find-skills` was added to Skill Policy.
+3. **Section 7 expanded**: test verification now includes `xcodebuild test` and a coverage reporting note.
+4. **Section 8 expanded**: `project.yml` was added to Protected Areas.
+5. **Section 13 clarified**: inline code comments, test comments, and TODO/FIXME comments must be Korean; documentation comments may be English when clearer for public or cross-module APIs.
+6. **Version**: v2.8 → v2.9. Last updated: 2026-05-18.
+
+---
+
 ## v2.6 — 2026-05-17
 
 **Scope:** Make the remaining guardrail tradeoffs explicit and narrow the fast-path exceptions.
@@ -173,3 +198,5 @@ Initial versions. Full inline technical guidelines covering Swift style, SwiftUI
 - 2026-05-16 | dizzyasset-semble-rs-default-rules | added conditional defaults for plan/search/deps/impact across AGENTS.md and semble_rs docs to keep the workflow deterministic for ambiguous tasks
 - 2026-05-16 | dizzyasset-docs-routing-cache | added a docs-analysis cache and repo-local sync script for the docs layout
 - 2026-05-17 | dizzyasset-ast-grep-aux-search | added ast-grep as an optional syntax-aware refinement step while keeping rg and Serena as the main discovery path
+- 2026-05-18 | dizzyasset-model-guides-routing | Added Gemini, GPT 5.4 Mini, GPT 5.x Codex, and generic fallback prompt guides and routed them from AGENTS.md
+- 2026-05-18 | agents-md-context-preservation | Clarified that AGENTS policy text should stay concise, preserve context, and keep conditions explicit for other agents
