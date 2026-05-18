@@ -1,6 +1,6 @@
 # AGENTS.md
 
-**Document version:** v3.0
+**Document version:** v3.1
 **Project:** DizzyAsset  
 **Role:** Lean router for agent behavior
 **Status:** Living document  
@@ -260,7 +260,7 @@ If a protocol violation occurs or is suspected:
 2. Report the violated rule, target, current state, and recovery plan
 3. Do not create or modify files without explicit approval
 
-## 14. High-Risk Guardrails
+## 13. High-Risk Guardrails
 
 These rules are mandatory for all models.
 
@@ -299,7 +299,7 @@ If a code change causes a build failure:
 Never leave the repo in a broken state.
 If blocked after a stop condition, resume only after explicit approval or a clear scope change.
 
-## 13. Final Authority
+## 14. Final Authority
 
 Agents provide evidence. The user makes the final decision.
 

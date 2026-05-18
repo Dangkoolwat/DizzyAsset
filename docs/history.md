@@ -5,6 +5,16 @@ This document tracks the evolution of `AGENTS.md` and core policy documents.
 
 ---
 
+## v3.1 — 2026-05-18
+
+**Scope:** Fix section ordering after the guardrail split.
+
+### Changes
+1. **Section 13/14 swapped**: High-Risk Guardrails now comes before Final Authority.
+2. **Version**: v3.0 → v3.1. Last updated: 2026-05-18.
+
+---
+
 ## v3.0 — 2026-05-18
 
 **Scope:** Normalize guardrail numbering and improve handoff traceability.
