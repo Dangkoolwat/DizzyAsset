@@ -1,10 +1,10 @@
 # AGENTS.md
 
-**Document version:** v3.1
+**Document version:** v3.2
 **Project:** DizzyAsset  
 **Role:** Lean router for agent behavior
 **Status:** Living document  
-**Last updated:** 2026-05-18
+**Last updated:** 2026-05-19
 
 ## 0. Purpose
 
@@ -143,7 +143,7 @@ If a trigger matches, read the linked policy before planning or execution.
 | Duplicate detection, hashing | `docs/guidelines/duplicate-detection.md` |
 | Workspace lifecycle, background tasks | `docs/guidelines/workspace-lifecycle.md` |
 | Caveman style, token efficiency, `caveman-shrink` | `docs/agent-policy/caveman-operating-guideline.md` |
-| `AGENTS.md` or `docs/agent-policy/` edits | `docs/history.md` |
+| `AGENTS.md` or `docs/agent-policy/` edits | `docs/history.md`, relevant git log |
 
 ## 5. Skill Policy
 
@@ -232,6 +232,8 @@ Include:
 - known risks
 - next step
 Trivial tasks may use task ID, risk level, and summary only.
+Implementation tasks use `docs/templates/handoff.md` and, when needed, a task-specific work log under `docs/agent-log/`.
+Review tasks use `docs/templates/review-report.md` and keep the review artifact separate from the implementation work log.
 
 UI changes must store screenshots or recordings in `artifacts/YYYY-MM-DD/<task-id>/`.
 

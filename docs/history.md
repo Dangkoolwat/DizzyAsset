@@ -5,6 +5,17 @@ This document tracks the evolution of `AGENTS.md` and core policy documents.
 
 ---
 
+## v3.2 — 2026-05-19
+
+**Scope:** Make review routing and audit trail hints more visible.
+
+### Changes
+1. **Section 4 clarified**: `AGENTS.md` / `docs/agent-policy/` edits now point to `docs/history.md` and the relevant git log.
+2. **Section 9 clarified**: implementation handoffs stay separate from review reports, and review tasks now point to `docs/templates/review-report.md`.
+3. **Version**: v3.1 → v3.2. Last updated: 2026-05-19.
+
+---
+
 ## v3.1 — 2026-05-18
 
 **Scope:** Fix section ordering after the guardrail split.
@@ -210,3 +221,4 @@ Initial versions. Full inline technical guidelines covering Swift style, SwiftUI
 - 2026-05-17 | dizzyasset-ast-grep-aux-search | added ast-grep as an optional syntax-aware refinement step while keeping rg and Serena as the main discovery path
 - 2026-05-18 | dizzyasset-model-guides-routing | Added Gemini, GPT 5.4 Mini, GPT 5.x Codex, and generic fallback prompt guides and routed them from AGENTS.md
 - 2026-05-18 | agents-md-context-preservation | Clarified that AGENTS policy text should stay concise, preserve context, and keep conditions explicit for other agents
+- 2026-05-19 | dizzyasset-gemini-prompt-guides-refresh | Refreshed Gemini Flash/Pro prompt guides with sequential-thinking, safety, digest, and work-report wording to match the latest model guide style
